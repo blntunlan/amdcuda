@@ -1,0 +1,4 @@
+[PASS] target-profile: Strict gfx1032 target and safety rules verified
+[PASS] unit-tests: see JSON report for full test listing
+[PASS] pbr-cpu: 7 PBR maps exported/reimported; normal and ORM checks passed (CPU only)
+RESULT: PASS; hardware verified: False; report: /mnt/data/rx6650_4k_work/RX6650-CUDA-Bridge/reports/verification.json

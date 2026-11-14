@@ -1,0 +1,8 @@
+{"id":"s1","prompt":"A person walks forward","duration":3,"steps":50,"seed":1,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s1_walk"}
+{"id":"s2","prompt":"A person runs in a circle","duration":5,"steps":50,"seed":2,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s2_run"}
+{"id":"s3","prompt":"A person jumps up and down","duration":2,"steps":50,"seed":3,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s3_jump"}
+{"id":"s4","prompt":"A person sits down on a chair and stands up","duration":8,"steps":50,"seed":4,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s4_sit"}
+{"id":"s5","prompt":"A person walks forward","duration":3,"steps":50,"seed":1,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s5_walk_repeat"}
+{"id":"s6","prompt":"A person punches with the right hand","duration":1,"steps":20,"seed":6,"out_dir":"E:/Projeler/amdcuda/studio/soak/out","name":"s6_punch"}
+{"id":"bad","prompt":"x","duration":30,"out_dir":"E:/Projeler/amdcuda/studio/soak/out"}
+{"cmd":"quit"}

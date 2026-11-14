@@ -1,0 +1,5 @@
+.venv-gfx1032/
+__pycache__/
+*.pyc
+reports/*.json
+reports/*local*

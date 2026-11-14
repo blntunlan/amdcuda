@@ -1,0 +1,4 @@
+# Only needed for the CPU streaming 4K renderer and independent image verifier.
+# Does NOT install ROCm, HIP, CUDA, PyTorch, ZLUDA or drivers.
+numpy>=1.26,<3
+Pillow>=10,<13

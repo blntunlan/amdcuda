@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kimodo Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23171a21'/><circle cx='16' cy='16' r='7' fill='%234f8cff'/></svg>">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0c0e13;
+    --side: #12151c;
+    --card: #181c25;
+    --field: #10131a;
+    --line: #262c39;
+    --line2: #343c4d;
+    --text: #e6e9ef;
+    --mute: #8c94a6;
+    --acc: #4f8cff;
+    --acc-soft: rgba(79, 140, 255, .14);
+    --ok: #3ecf8e;
+    --warn: #f5b041;
+    --bad: #ef5350;
+    --purp: #c58cff;
+  }
+  * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--line2) transparent; }
+  *::-webkit-scrollbar { width: 6px; height: 6px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 13px/1.42 system-ui, "Segoe UI", sans-serif; }
+  .app { display: grid; grid-template-columns: 356px 1fr 352px; height: 100vh; overflow: hidden; }
+
+  /* Sidebars */
+  aside { background: var(--side); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  aside.right { border-right: 0; border-left: 1px solid var(--line); }
+  .side-head { padding: 12px 14px 10px; border-bottom: 1px solid var(--line); background: var(--side); flex-shrink: 0; }
+  .side-body { flex: 1; min-height: 0; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .side-foot { padding: 10px 14px 12px; border-top: 1px solid var(--line); background: var(--side); flex-shrink: 0; }
+
+  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  h1 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: .2px; }
+  .icon-btn { padding: 4px 8px; font-size: 12px; border-radius: 6px; background: var(--card); color: var(--mute); }
+  .icon-btn:hover:not(:disabled) { color: var(--text); border-color: var(--acc); }
+
+  .status-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; background: var(--card); border: 1px solid var(--line); font-size: 11.5px; min-width: 0; }
+  .pill span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mute); flex-shrink: 0; }
+  .s-ready .dot { background: var(--ok); }
+  .s-busy .dot { background: var(--acc); animation: pulse 1s infinite; }
+  .s-starting .dot { background: var(--warn); animation: pulse 1s infinite; }
+  .s-dead .dot { background: var(--bad); }
+  @keyframes pulse { 50% { opacity: .3; } }
+
+  /* Tabs */
+  .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-top: 10px; padding: 3px; background: var(--field); border: 1px solid var(--line); border-radius: 8px; }
+  .tab { background: transparent; border: 0; border-radius: 6px; padding: 6px 8px; font-size: 12px; font-weight: 600; color: var(--mute); display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .tab-badge { font-size: 10.5px; padding: 1px 6px; border-radius: 99px; background: var(--field); color: var(--mute); border: 1px solid var(--line); font-weight: 600; }
+  .tab-badge.live { background: var(--acc-soft); color: var(--acc); border-color: rgba(79,140,255,.4); }
+  .tab-pane { display: flex; flex-direction: column; gap: 12px; }
+  .tab-pane[hidden] { display: none; }
+
+  /* Cards & Sections */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .card-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text); display: flex; align-items: center; gap: 7px; }
+  .card-num { width: 18px; height: 18px; border-radius: 5px; background: var(--acc-soft); color: var(--acc); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .badge { font-size: 11px; padding: 2px 7px; border-radius: 99px; background: var(--field); border: 1px solid var(--line); color: var(--mute); white-space: nowrap; }
+  .badge.on { background: var(--acc-soft); border-color: rgba(79,140,255,.35); color: var(--acc); }
+  .badge.ok { background: rgba(62,207,142,.12); border-color: rgba(62,207,142,.35); color: var(--ok); }
+  .badge.bad { background: rgba(239,83,80,.14); border-color: rgba(239,83,80,.4); color: var(--bad); }
+
+  /* Collapsible sub-cards inside Kısıtlar */
+  details.subcard { background: var(--field); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  details.subcard[open] { border-color: var(--line2); }
+  details.subcard > summary { list-style: none; cursor: pointer; padding: 9px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; user-select: none; font-size: 12px; font-weight: 600; }
+  details.subcard > summary::-webkit-details-marker { display: none; }
+  details.subcard > summary:hover { background: rgba(255,255,255,.02); }
+  .sum-l { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .chev { color: var(--mute); font-size: 10px; transition: transform .15s; display: inline-block; }
+  details.subcard[open] .chev { transform: rotate(90deg); }
+  .sub-body { padding: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 9px; background: rgba(18,21,28,.45); }
+
+  /* Inputs & Buttons */
+  label.fld { display: block; color: var(--mute); font-size: 11px; margin: 0 0 4px; }
+  label.chk { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 12px; cursor: pointer; margin: 0; user-select: none; }
+  label.chk input[type=checkbox] { width: auto; flex-shrink: 0; margin: 0; accent-color: var(--acc); }
+  textarea, input, select { width: 100%; background: var(--field); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 8px; font: inherit; }
+  textarea:focus, input:focus, select:focus { outline: none; border-color: var(--acc); }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  button { background: var(--field); color: var(--text); border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 10px; font: inherit; cursor: pointer; transition: border-color .12s, background .12s; }
+  button:hover:not(:disabled) { border-color: var(--acc); }
+  button.ghost { background: transparent; border-style: dashed; color: var(--mute); }
+  button.ghost:hover:not(:disabled) { color: var(--text); border-style: solid; }
+  button.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; width: 100%; padding: 10px; font-size: 13px; }
+  button.primary:hover:not(:disabled) { filter: brightness(1.08); }
+  button:disabled { opacity: .45; cursor: default; }
+
+  .kv { color: var(--mute); font-size: 11.5px; line-height: 1.4; }
+  .msg-ok { color: var(--ok); } .msg-err { color: var(--bad); }
+  #genmsg { margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #genmsg:empty { display: none; margin: 0; }
+  .link-btn { background: none; border: 0; padding: 0; color: var(--acc); font-size: 11.5px; text-decoration: underline; }
+
+  /* Segments & Timeline */
+  .seg { display: grid; grid-template-columns: 4px 1fr 56px 26px; gap: 7px; align-items: start; }
+  .seg + .seg { margin-top: 7px; }
+  .seg .sw { width: 4px; align-self: stretch; min-height: 36px; border-radius: 4px; }
+  .seg textarea { min-height: 44px; padding: 6px 8px; resize: none; overflow-y: auto; line-height: 1.35; }
+  .seg input { padding: 6px 4px; text-align: center; }
+  .seg button { padding: 6px 0; color: var(--mute); }
+  .tl { position: relative; height: 32px; background: var(--field); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .tl-segs { display: flex; height: 100%; }
+  .tl-segs div { height: 100%; font-size: 10.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.7); padding: 3px 5px; overflow: hidden; white-space: nowrap; border-right: 1px solid var(--bg); opacity: .9; }
+  .tl-path { position: absolute; bottom: 0; height: 5px; background: var(--ok); }
+  .tl-marks div { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--purp); pointer-events: none; }
+  .tl-marks div::after { content: ''; position: absolute; top: 2px; left: -4px; width: 10px; height: 10px; background: var(--purp); transform: rotate(45deg); }
+
+  /* Path canvas & params */
+  #pathCv { width: 100%; max-width: 256px; margin: 0 auto; aspect-ratio: 1; background: #090b10; border: 1px solid var(--line); border-radius: 6px; cursor: crosshair; display: block; }
+  .path-bar { display: flex; gap: 6px; align-items: center; }
+  .path-bar button { font-size: 11.5px; padding: 4px 9px; }
+  .range-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+  .range-grid span { color: var(--mute); font-size: 12px; }
+  .moon-params { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 2px; }
+  .moon-params.dim { opacity: .55; }
+
+  /* Keyframes */
+  .key { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; }
+  .key + .key { margin-top: 6px; }
+  .key-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .key-top .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; font-weight: 500; font-size: 12px; color: var(--purp); }
+  .key-top button { width: 22px; flex-shrink: 0; padding: 2px 0; color: var(--mute); }
+  .key-bot { display: flex; align-items: center; gap: 6px; margin-top: 6px; color: var(--mute); font-size: 11px; }
+  .key-bot input { width: 60px; padding: 4px 5px; font-size: 12px; text-align: center; }
+  .key-bot select { flex: 1; padding: 4px 6px; font-size: 12px; min-width: 0; }
+  .key-add { display: flex; gap: 6px; flex-wrap: wrap; }
+  .key-add select { flex: 1.15; min-width: 132px; }
+  .key-add button { flex: 1; min-width: 124px; white-space: nowrap; }
+
+  /* Queue & Log */
+  .job { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .job .p { overflow-wrap: anywhere; font-weight: 500; }
+  .meta { color: var(--mute); font-size: 11px; display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+  .st-queued { color: var(--mute); font-weight: 600; } .st-running { color: var(--acc); font-weight: 600; } .st-done { color: var(--ok); font-weight: 600; }
+  .st-failed { color: var(--bad); font-weight: 600; } .st-cancelled { color: var(--mute); text-decoration: line-through; }
+  .tqdm { font: 11px ui-monospace, Consolas, monospace; color: var(--acc); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background: var(--field); padding: 4px 6px; border-radius: 4px; }
+  .checks { font-size: 11px; color: var(--mute); }
+  .cres { font-size: 11px; color: var(--purp); background: rgba(197,140,255,.08); border-left: 2px solid rgba(197,140,255,.55); padding: 3px 7px; border-radius: 0 4px 4px 0; }
+  pre.log { background: #090b10; border: 1px solid var(--line); border-radius: 8px; padding: 9px; min-height: 320px; flex: 1; overflow: auto;
+    font: 11px/1.4 ui-monospace, Consolas, monospace; color: #b8bfcc; white-space: pre-wrap; margin: 0; }
+
+  /* Library (Right Sidebar) */
+  .filter { display: flex; gap: 6px; margin-top: 8px; }
+  .filter input { flex: 1; min-width: 0; }
+  .filter button { flex-shrink: 0; }
+  .item { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; cursor: pointer; transition: border-color .12s, background .12s; display: flex; flex-direction: column; gap: 6px; }
+  .item:hover { border-color: var(--line2); }
+  .item.active { border-color: var(--acc); background: linear-gradient(180deg, rgba(79,140,255,.08), rgba(24,28,37,1)); }
+  .item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .item .name { font-weight: 600; font-family: ui-monospace, Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; }
+  .item .p { overflow-wrap: anywhere; color: #cfd5e0; font-size: 12.5px; }
+  .note-box { font-size: 11.5px; color: #d9c9a3; background: rgba(245,176,65,.08); border-left: 2px solid rgba(245,176,65,.6); padding: 4px 7px; border-radius: 0 4px 4px 0; overflow-wrap: anywhere; }
+  .item-foot { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px solid rgba(38,44,57,.7); }
+  .item .acts { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .item .acts.exports { justify-content: flex-start; }
+  .acts-lbl { font-size: 10.5px; color: var(--mute); margin-right: 2px; text-transform: uppercase; letter-spacing: .4px; }
+  .item .acts button, .item .acts a.btn { font-size: 11px; padding: 3px 7px; line-height: 1.3; }
+  a.btn { display: inline-flex; align-items: center; color: #9fc0ff; text-decoration: none; border: 1px solid rgba(79,140,255,.32); border-radius: 6px; background: rgba(79,140,255,.08); font-weight: 600; }
+  a.btn:hover { border-color: var(--acc); background: rgba(79,140,255,.16); }
+  .star { color: var(--warn); }
+
+  /* 3D Viewport */
+  main { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #101319; }
+  #view { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+  #view canvas { display: block; width: 100%; height: 100%; }
+  .hud { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; z-index: 2; }
+  .hud > * { pointer-events: auto; }
+  .hud .title { background: rgba(15,17,21,.82); backdrop-filter: blur(6px); padding: 7px 11px; border-radius: 8px; border: 1px solid var(--line);
+    flex: 0 1 auto; min-width: 0; }
+  .hud .title-text { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .legend { display: flex; gap: 10px; margin-top: 4px; font-size: 10.5px; color: var(--mute); flex-wrap: wrap; }
+  .legend[hidden] { display: none; }
+  .legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  .hud-right { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+  .toggles { display: flex; background: rgba(15,17,21,.82); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 8px; padding: 3px; gap: 3px; white-space: nowrap; }
+  .toggles button { background: transparent; border: 1px solid transparent; padding: 4px 9px; font-size: 12px; color: var(--mute); }
+  .toggles button:hover { color: var(--text); border-color: transparent; }
+  .toggles button.on { background: var(--acc-soft); border-color: rgba(79,140,255,.4); color: #fff; }
+  .rec-btn { background: rgba(15,17,21,.82); backdrop-filter: blur(6px); padding: 6px 10px; font-size: 12px; white-space: nowrap; }
+  .rec-btn.on { border-color: var(--bad); color: var(--bad); background: rgba(239,83,80,.14); }
+
+  .timeline { background: var(--side); border-top: 1px solid var(--line); padding: 10px 14px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+  .timeline #play { min-width: 34px; text-align: center; background: var(--card); }
+  .timeline input[type=range] { flex: 1; min-width: 80px; padding: 0; accent-color: var(--acc); }
+  .timeline .fc { font-family: ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--mute); min-width: 118px; text-align: right; white-space: nowrap; }
+  .timeline select { width: auto; background: var(--card); }
+  .empty { color: var(--mute); text-align: center; padding: 24px 10px; background: var(--card); border: 1px dashed var(--line); border-radius: 8px; }
+  .conn-card { background: rgba(239,83,80,.08); border: 1px solid rgba(239,83,80,.42); border-radius: 10px; padding: 11px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .conn-card[hidden] { display: none; }
+  .conn-card.ready8787 { background: rgba(62,207,142,.08); border-color: rgba(62,207,142,.45); }
+  .conn-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .conn-acts button, .conn-acts a { font-size: 12px; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+  .conn-acts .conn-pri { background: var(--acc); border: 1px solid var(--acc); color: #fff; }
+  .conn-acts .conn-pri:hover { filter: brightness(1.08); }
+  .conn-acts .conn-sec { background: var(--field); border: 1px solid var(--line2); color: var(--text); }
+  .conn-acts .conn-sec:hover { border-color: var(--acc); }
+  .conn-cmd { font: 11px/1.35 ui-monospace, Consolas, monospace; background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; color: #cfd5e0; overflow-wrap: anywhere; user-select: all; }
+
+  @media (max-width: 1120px) {
+    .app { grid-template-columns: 1fr; height: auto; min-height: 100vh; overflow: visible; }
+    main { order: -1; height: 64vh; min-height: 360px; }
+    aside { border: 0; border-top: 1px solid var(--line); overflow: visible; }
+    .side-body { overflow: visible; }
+  }
+  @media (max-width: 560px) {
+    .hud { flex-direction: column; align-items: stretch; }
+    .hud .title { font-size: 12px; }
+    .hud-right { flex-wrap: wrap; }
+    .timeline { flex-wrap: wrap; gap: 8px; }
+    .timeline .fc { min-width: 0; margin-left: auto; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="side-head">
+      <div class="brand-row">
+        <h1>Kimodo Studio</h1>
+        <button id="restart" class="icon-btn" title="Worker'ı yeniden başlat">↻ Yeniden başlat</button>
+      </div>
+      <div class="status-bar">
+        <div id="worker" class="pill s-starting"><span class="dot"></span><span id="wstatus">bağlanıyor…</span></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="create" role="tab" aria-selected="true">Üret</button>
+        <button class="tab" data-tab="queue" role="tab" aria-selected="false">Kuyruk <span class="tab-badge" id="qBadge">0</span></button>
+        <button class="tab" data-tab="logs" role="tab" aria-selected="false">Log</button>
+      </div>
+    </div>
+
+    <div class="side-body">
+      <section class="conn-card" id="connBox" hidden>
+        <div class="card-head">
+          <span class="card-title" style="color:var(--text)">Sunucu bağlantısı yok</span>
+          <span class="badge bad" id="connBadge">bağlı değil</span>
+        </div>
+        <div class="kv" id="connMsg" style="color:#d6dbe5">Kimodo Studio sunucusu çalışmıyor. Başlatmak için proje klasöründeki <b>Kimodo Studio.bat</b> dosyasını çalıştırın.</div>
+        <div class="conn-cmd" id="connCmd">E:\Projeler\amdcuda\Kimodo Studio.bat</div>
+        <div class="conn-acts">
+          <button type="button" class="conn-pri" id="btnReconnect">↻ Tekrar Bağlan</button>
+          <a class="conn-pri" id="btnOpen8787" href="http://127.0.0.1:8787" hidden>🌐 127.0.0.1:8787 Aç</a>
+          <button type="button" class="conn-sec" id="btnCopyCmd">📋 Komutu Kopyala</button>
+        </div>
+      </section>
+
+      <div class="tab-pane" id="pane-create">
+        <section class="card">
+          <div class="card-head">
+            <span class="card-title"><span class="card-num">1</span> Zaman Çizelgesi</span>
+            <span class="badge" id="tlBadge">4.0 / 20 sn</span>
+          </div>
+          <div class="kv">Segmentler sırayla oynar (İngilizce prompt).</div>
+          <div id="segs"></div>
+          <button id="addSeg" class="ghost" type="button">+ Segment ekle</button>
+          <div class="tl" id="tl"><div class="tl-segs" id="tlSegs"></div><div class="tl-path" id="tlPath" hidden></div><div class="tl-marks" id="tlMarks"></div></div>
+          <div class="kv" id="tlInfo"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <span class="card-title"><span class="card-num">2</span> Kısıtlar</span>
+            <span class="badge" id="conBadge">serbest</span>
+          </div>
+
+          <details class="subcard" id="secPath" open>
+            <summary>
+              <span class="sum-l"><span class="chev">▶</span><span>Kök yolu (üstten 10×10 m)</span></span>
+              <span class="badge" id="pathBadge">yol yok</span>
+            </summary>
+            <div class="sub-body">
+              <div class="kv">Tıkla = nokta ekle · Sağ tık = son noktayı sil</div>
+              <canvas id="pathCv" width="560" height="560"></canvas>
+              <div class="path-bar">
+                <button id="pathUndo" type="button" title="Son noktayı geri al">Geri al</button>
+                <button id="pathClear" type="button">Temizle</button>
+              </div>
+              <div class="kv" id="pathInfo">yol yok (serbest)</div>
+              <div>
+                <label class="fld">Zaman aralığı (sn)</label>
+                <div class="range-grid">
+                  <input id="pStart" type="number" min="0" step="0.5" value="0" title="başlangıç (sn)">
+                  <span>–</span>
+                  <input id="pEnd" type="number" min="0" step="0.5" placeholder="son" title="bitiş (sn); boş = sona kadar">
+                </div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fld">Segmente oturt</label>
+                  <select id="pSeg" title="Aralığı bir segmente oturt"></select>
+                </div>
+                <div>
+                  <label class="fld">Bakış yönü</label>
+                  <select id="pFacing" title="Karakterin yol boyunca nereye baktığı">
+                    <option value="free">serbest</option>
+                    <option value="travel">gidiş yönüne</option>
+                    <option value="reverse">gidişin tersine</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="subcard" id="secMoon">
+            <summary>
+              <span class="sum-l"><span class="chev">▶</span><span>Moonwalk ayak deseni</span></span>
+              <span class="badge" id="moonBadge">kapalı</span>
+            </summary>
+            <div class="sub-body" title="Yol aralığında ayakları moonwalk desenine kilitler: bir ayak düz ve geriye kayar, diğeri topuk kalkık ve parmak ucu yerde sabit. 'Gidişin tersine' bakış ister.">
+              <label class="chk"><input id="pMoon" type="checkbox"> <span>Ayakları moonwalk desenine kilitle</span></label>
+              <div class="moon-params dim" id="moonParams">
+                <div>
+                  <label class="fld">Adım süresi (sn)</label>
+                  <input id="pMoonStep" type="number" min="0.3" max="1.2" step="0.05" value="0.5">
+                </div>
+                <div>
+                  <label class="fld">Topuk açısı (°)</label>
+                  <input id="pMoonHeel" type="number" min="15" max="60" step="5" value="50">
+                </div>
+              </div>
+              <button id="moonPreset" type="button">🕺 Moonwalk hazır ayarını yükle</button>
+            </div>
+          </details>
+
+          <details class="subcard" id="secKeys">
+            <summary>
+              <span class="sum-l"><span class="chev">▶</span><span>Anahtar kareler</span></span>
+              <span class="badge" id="keysBadge">0 kare</span>
+            </summary>
+            <div class="sub-body">
+              <div class="kv">3B görüntüleyicide bir animasyon açıp hedef kareyi seçin.</div>
+              <div id="keys"></div>
+              <div class="key-add">
+                <select id="keyType">
+                  <option value="pose">Tüm vücut pozu</option>
+                  <option value="right-hand">Sağ el</option><option value="left-hand">Sol el</option>
+                  <option value="right-foot">Sağ ayak</option><option value="left-foot">Sol ayak</option>
+                </select>
+                <button id="addKey" type="button">+ Şu anki kareden</button>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <span class="card-title"><span class="card-num">3</span> Üretim Ayarları</span>
+            <span class="badge" id="cfgBadge">50 adım · ×1</span>
+          </div>
+          <div class="row3">
+            <div><label class="fld">Adım</label><input id="steps" type="number" min="5" max="200" value="50"></div>
+            <div><label class="fld">Adet</label><input id="count" type="number" min="1" max="8" value="1"></div>
+            <div><label class="fld">Seed</label><input id="seed" type="number" placeholder="rastgele"></div>
+          </div>
+          <div><label class="fld">İsim (opsiyonel)</label><input id="name" placeholder="otomatik"></div>
+          <label class="chk">
+            <input id="pp" type="checkbox" checked> <span>Ayak kayması düzeltme (MotionCorrection)</span>
+          </label>
+          <label class="chk" title="Parmak ucu zemine girerse ayak parmağını büker (vücudun geri kalanı değişmez)">
+            <input id="gf" type="checkbox" checked> <span>Zemin teması (ayak parmağı IK)</span>
+          </label>
+        </section>
+      </div>
+
+      <div class="tab-pane" id="pane-queue" hidden>
+        <div id="jobs"><div class="empty">Henüz iş yok</div></div>
+      </div>
+
+      <div class="tab-pane" id="pane-logs" hidden>
+        <section class="card">
+          <div class="card-head">
+            <span class="card-title">Worker Bilgisi</span>
+          </div>
+          <div class="kv" id="winfo">Bağlantı bekleniyor…</div>
+        </section>
+        <pre class="log" id="log"></pre>
+      </div>
+    </div>
+
+    <div class="side-foot" id="createFoot">
+      <div class="kv" id="genmsg"></div>
+      <button class="primary" id="gen" type="button">Üret (Ctrl+Enter)</button>
+    </div>
+  </aside>
+
+  <main>
+    <div id="view">
+      <div class="hud">
+        <div class="title">
+          <div class="title-text" id="vtitle">Kütüphaneden bir animasyon seç</div>
+          <div class="legend" id="vlegend" hidden>
+            <span><i style="background:var(--warn)"></i>gerçek kök izi</span>
+            <span id="legPath" hidden><i style="background:var(--ok)"></i>hedef yol</span>
+            <span id="legKey" hidden><i style="background:var(--purp)"></i>anahtar kare</span>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="toggles">
+            <button id="tMesh" class="on" type="button">Gövde</button>
+            <button id="tSkel" type="button">İskelet</button>
+            <button id="tFollow" class="on" type="button">Takip</button>
+          </div>
+          <button id="tRec" class="rec-btn" type="button" title="Bir döngüyü WebM olarak kaydet">● Video</button>
+        </div>
+      </div>
+    </div>
+    <div class="timeline">
+      <button id="play" type="button" title="Oynat / Duraklat (Space)">▶</button>
+      <input id="scrub" type="range" min="0" max="0" value="0">
+      <select id="speed" title="Oynatma hızı"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option></select>
+      <label class="chk"><input id="loop" type="checkbox" checked><span>Döngü</span></label>
+      <span class="fc" id="fc">– / –</span>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="side-head">
+      <div class="brand-row">
+        <h1>Kütüphane</h1>
+        <span class="kv" id="libCount"></span>
+      </div>
+      <div class="filter">
+        <input id="q" placeholder="İsim, prompt veya not ara…">
+        <button id="onlySaved" type="button" title="Yalnızca kaydedilenler">★</button>
+      </div>
+      <button id="importLegacy" class="ghost" type="button" style="width:100%;margin-top:8px;font-size:12px">Eski çıktıları içe aktar (kimodo/output)</button>
+    </div>
+    <div class="side-body">
+      <div id="lib"><div class="empty">Boş</div></div>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const $ = (id) => document.getElementById(id);
+const api = async (path, opts = {}) => {
+  const headers = opts.body ? { 'content-type': 'application/json', ...(opts.headers || {}) } : (opts.headers || {});
+  const r = await fetch(path, { ...opts, headers });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+};
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const round2 = (n) => Math.round(n * 100) / 100;
+
+// ---------------- Sekmeler ----------------
+function setTab(name) {
+  document.querySelectorAll('.tab').forEach((b) => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on);
+  });
+  document.querySelectorAll('.tab-pane').forEach((p) => { p.hidden = p.id !== `pane-${name}`; });
+  $('createFoot').hidden = name !== 'create';
+}
+document.querySelector('.tabs').onclick = (e) => {
+  const b = e.target.closest('[data-tab]');
+  if (b) setTab(b.dataset.tab);
+};
+
+// ---------------- 3D sahne ----------------
+const view = $('view');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+view.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x14171d);
+scene.fog = new THREE.Fog(0x14171d, 12, 30);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 100);
+camera.position.set(2.8, 1.7, 3.6);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.9, 0);
+controls.enableDamping = true;
+
+scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x2a2420, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(3, 6, 4); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 0.5, far: 20 });
+scene.add(sun, sun.target);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x1b1f27, roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const grid = new THREE.GridHelper(60, 60, 0x3a4150, 0x262b35); grid.position.y = 0.001; scene.add(grid);
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(view);
+
+// ---------------- skin (placeholder SOMA gövdesi) ----------------
+let skin = null, skinPromise = null, mesh = null, skel = null, trail = null;
+const J = 77;
+
+function disposeGroup(g) {
+  if (!g) return;
+  g.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) {
+      if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+      else o.material.dispose();
+    }
+  });
+}
+
+async function loadSkin() {
+  if (skin) return skin;
+  if (skinPromise) return skinPromise;
+  skinPromise = (async () => {
+    const rLayout = await fetch('/files/_skin.json');
+    if (!rLayout.ok) throw new Error('Skin layout yüklenemedi (_skin.json)');
+    const layout = await rLayout.json();
+    const rBin = await fetch('/files/_skin.bin');
+    if (!rBin.ok) throw new Error('Skin verisi yüklenemedi (_skin.bin)');
+    const buf = await rBin.arrayBuffer();
+    const take = (k, T) => { const L = layout[k]; const n = L.shape.reduce((a, b) => a * b, 1); return new T(buf, L.offset, n); };
+    const loaded = {
+      verts: take('vertices', Float32Array), faces: take('faces', Uint32Array),
+      idx: take('lbs_indices', Uint32Array), w: take('lbs_weights', Float32Array),
+      invBind: take('inv_bind', Float32Array), conn: take('connections', Uint32Array),
+      W: layout.lbs_weights.shape[1], V: layout.vertices.shape[0],
+    };
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(loaded.verts), 3).setUsage(THREE.DynamicDrawUsage));
+    geo.setIndex(new THREE.BufferAttribute(loaded.faces, 1));
+    geo.computeVertexNormals();
+    mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xb9c2d0, roughness: 0.55, metalness: 0.05 }));
+    mesh.castShadow = true; mesh.frustumCulled = false;
+    mesh.visible = $('tMesh').classList.contains('on');
+    scene.add(mesh);
+    const sg = new THREE.BufferGeometry();
+    sg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(loaded.conn.length * 3), 3));
+    skel = new THREE.LineSegments(sg, new THREE.LineBasicMaterial({ color: 0x4f8cff, depthTest: false }));
+    skel.renderOrder = 10; skel.visible = $('tSkel').classList.contains('on'); skel.frustumCulled = false;
+    scene.add(skel);
+    skin = loaded;
+    return skin;
+  })().catch((e) => { skinPromise = null; throw e; });
+  return skinPromise;
+}
+
+// Bir kareyi uygula: frame[j] = 3x3 dünya rotasyonu (satır sıralı) + dünya konumu  →  LBS
+const aff = new Float32Array(J * 12);
+function applyFrame(m, f) {
+  const base = f * J * 12, d = m.data, ib = skin.invBind;
+  for (let j = 0; j < J; j++) {
+    const o = base + j * 12;
+    const r00 = d[o], r01 = d[o + 1], r02 = d[o + 2], r10 = d[o + 3], r11 = d[o + 4], r12 = d[o + 5],
+      r20 = d[o + 6], r21 = d[o + 7], r22 = d[o + 8], tx = d[o + 9], ty = d[o + 10], tz = d[o + 11];
+    const b = j * 16, a = j * 12;
+    for (let c = 0; c < 4; c++) {
+      const b0 = ib[b + c], b1 = ib[b + 4 + c], b2 = ib[b + 8 + c], b3 = ib[b + 12 + c];
+      aff[a + c] = r00 * b0 + r01 * b1 + r02 * b2 + tx * b3;
+      aff[a + 4 + c] = r10 * b0 + r11 * b1 + r12 * b2 + ty * b3;
+      aff[a + 8 + c] = r20 * b0 + r21 * b1 + r22 * b2 + tz * b3;
+    }
+  }
+  if (mesh.visible) {
+    const pos = mesh.geometry.attributes.position.array, v0 = skin.verts, I = skin.idx, Wt = skin.w, W = skin.W;
+    for (let v = 0; v < skin.V; v++) {
+      const px = v0[v * 3], py = v0[v * 3 + 1], pz = v0[v * 3 + 2];
+      let x = 0, y = 0, z = 0;
+      for (let k = 0; k < W; k++) {
+        const w = Wt[v * W + k]; if (w === 0) continue;
+        const idx = I[v * W + k] * 12;
+        x += w * (aff[idx] * px + aff[idx + 1] * py + aff[idx + 2] * pz + aff[idx + 3]);
+        y += w * (aff[idx + 4] * px + aff[idx + 5] * py + aff[idx + 6] * pz + aff[idx + 7]);
+        z += w * (aff[idx + 8] * px + aff[idx + 9] * py + aff[idx + 10] * pz + aff[idx + 11]);
+      }
+      pos[v * 3] = x; pos[v * 3 + 1] = y; pos[v * 3 + 2] = z;
+    }
+    mesh.geometry.attributes.position.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+  }
+  if (skel.visible) {
+    const sp = skel.geometry.attributes.position.array, cn = skin.conn;
+    for (let i = 0; i < cn.length; i++) {
+      const o = base + cn[i] * 12;
+      sp[i * 3] = d[o + 9]; sp[i * 3 + 1] = d[o + 10]; sp[i * 3 + 2] = d[o + 11];
+    }
+    skel.geometry.attributes.position.needsUpdate = true;
+  }
+  return [d[base + 9], d[base + 10], d[base + 11]];
+}
+
+// ---------------- oynatıcı ----------------
+let motion = null, frame = 0, playing = false, acc = 0, lastT = performance.now(), follow = true, openSeq = 0;
+const lastRoot = new THREE.Vector3();
+
+function clearMotion() {
+  if (recorder) stopRec();
+  motion = null; frame = 0; playing = false; acc = 0;
+  $('play').textContent = '▶';
+  $('scrub').max = 0; $('scrub').value = 0;
+  $('fc').textContent = '– / –';
+  $('vtitle').textContent = 'Kütüphaneden bir animasyon seç';
+  $('vlegend').hidden = true;
+  if (mesh) mesh.visible = false;
+  if (skel) skel.visible = false;
+  if (trail) { scene.remove(trail); disposeGroup(trail); trail = null; }
+  renderLib();
+}
+
+async function openMotion(item) {
+  const seq = ++openSeq;
+  if (recorder) stopRec();
+  $('vtitle').innerHTML = `<b>${esc(item.name)}</b> — yükleniyor…`;
+  $('vlegend').hidden = true;
+  await loadSkin();
+  const r = await fetch(`/files/${encodeURIComponent(item.name)}.view.bin?t=${Date.now()}`);
+  if (!r.ok) throw new Error(`Animasyon görüntüsü yüklenemedi (${r.status})`);
+  const buf = await r.arrayBuffer();
+  if (seq !== openSeq) return;
+  const data = new Float32Array(buf);
+  const frames = Math.floor(data.length / (J * 12));
+  if (frames < 1) throw new Error('Boş animasyon verisi');
+  motion = { name: item.name, data, frames, fps: item.fps || 30, item };
+  mesh.visible = $('tMesh').classList.contains('on');
+  skel.visible = $('tSkel').classList.contains('on');
+  $('scrub').max = motion.frames - 1;
+  frame = 0; acc = 0; playing = true; $('play').textContent = '❚❚';
+  $('vtitle').innerHTML = `<b>${esc(item.name)}</b> — ${esc(item.prompt)}`;
+  if (trail) { scene.remove(trail); disposeGroup(trail); }
+  trail = new THREE.Group();
+  const pts = [];
+  for (let f = 0; f < motion.frames; f++) { const o = f * J * 12; pts.push(new THREE.Vector3(data[o + 9], 0.005, data[o + 11])); }
+  trail.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xf5b041 })));
+  let hasPath = false, hasKey = false;
+  for (const c of item.constraints || []) {
+    if (c.type === 'root_path' && Array.isArray(c.points) && c.points.length >= 2) {
+      hasPath = true;
+      const line = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(c.points.map(([x, z]) => new THREE.Vector3(x, 0.01, z))),
+        new THREE.LineDashedMaterial({ color: 0x3ecf8e, dashSize: 0.15, gapSize: 0.08 }),
+      );
+      line.computeLineDistances();
+      trail.add(line);
+    } else if ((c.type === 'pose' || c.type === 'effector') && Number.isFinite(c.time)) {
+      hasKey = true;
+      const f = Math.max(0, Math.min(Math.round(c.time * motion.fps), motion.frames - 1)), o = f * J * 12;
+      const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.06), new THREE.MeshBasicMaterial({ color: 0xc58cff }));
+      m.position.set(data[o + 9], 0.06, data[o + 11]);
+      trail.add(m);
+    }
+  }
+  $('vlegend').hidden = false;
+  $('legPath').hidden = !hasPath;
+  $('legKey').hidden = !hasKey;
+  scene.add(trail);
+  const root0 = applyFrame(motion, 0);
+  const delta = new THREE.Vector3(root0[0], 0.9, root0[2]).sub(controls.target);
+  controls.target.add(delta); camera.position.add(delta);
+  lastRoot.set(root0[0], 0, root0[2]);
+  setFrame(0);
+  renderLib();
+}
+
+function setFrame(f) {
+  if (!motion) return;
+  frame = Math.max(0, Math.min(f, motion.frames - 1));
+  const r = applyFrame(motion, frame);
+  if (follow) {
+    const d = new THREE.Vector3(r[0] - lastRoot.x, 0, r[2] - lastRoot.z);
+    controls.target.add(d); camera.position.add(d);
+  }
+  lastRoot.set(r[0], 0, r[2]);
+  sun.position.set(r[0] + 3, 6, r[2] + 4); sun.target.position.set(r[0], 0, r[2]);
+  $('scrub').value = frame;
+  $('fc').textContent = `${frame + 1} / ${motion.frames}  ${(frame / motion.fps).toFixed(2)}s`;
+}
+
+function tick(t) {
+  const dt = Math.min((t - lastT) / 1000, 0.25); lastT = t;
+  if (motion && playing) {
+    acc += dt * motion.fps * parseFloat($('speed').value);
+    if (acc >= 1) {
+      let f = frame + Math.floor(acc); acc -= Math.floor(acc);
+      if (f >= motion.frames) {
+        if (recorder) stopRec();
+        if ($('loop').checked) f = 0; else { f = motion.frames - 1; playing = false; $('play').textContent = '▶'; }
+      }
+      setFrame(f);
+    }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+$('play').onclick = () => { if (!motion) return; playing = !playing; $('play').textContent = playing ? '❚❚' : '▶'; };
+$('scrub').oninput = (e) => { playing = false; $('play').textContent = '▶'; setFrame(+e.target.value); };
+const toggle = (btn, fn) => btn.onclick = () => { btn.classList.toggle('on'); fn(btn.classList.contains('on')); if (motion) setFrame(frame); };
+toggle($('tMesh'), (on) => mesh && (mesh.visible = !!motion && on));
+toggle($('tSkel'), (on) => skel && (skel.visible = !!motion && on));
+toggle($('tFollow'), (on) => follow = on);
+addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); generate(); return; }
+  if (e.target instanceof Element && e.target.matches('textarea, select, input:not([type=range]):not([type=checkbox])')) return;
+  if (e.code === 'Space') { e.preventDefault(); $('play').click(); }
+  if (e.key === 'ArrowRight' && motion) { e.preventDefault(); playing = false; $('play').textContent = '▶'; setFrame(Math.min(frame + 1, motion.frames - 1)); }
+  if (e.key === 'ArrowLeft' && motion) { e.preventDefault(); playing = false; $('play').textContent = '▶'; setFrame(Math.max(frame - 1, 0)); }
+});
+
+// WebM kaydı: baştan bir döngü
+let recorder = null, chunks = [];
+function pickVideoMime() {
+  for (const m of ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']) {
+    if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(m)) return m;
+  }
+  return '';
+}
+$('tRec').onclick = () => {
+  if (!motion) return;
+  if (recorder) return stopRec();
+  if (typeof MediaRecorder === 'undefined') return alert('Bu tarayıcı video kaydını desteklemiyor.');
+  chunks = [];
+  const recName = motion.name;
+  const mimeType = pickVideoMime();
+  recorder = new MediaRecorder(renderer.domElement.captureStream(30), mimeType ? { mimeType, videoBitsPerSecond: 8e6 } : { videoBitsPerSecond: 8e6 });
+  recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const url = URL.createObjectURL(new Blob(chunks, { type: 'video/webm' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = `${recName}.webm`; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  };
+  setFrame(0); acc = 0; playing = true; $('play').textContent = '❚❚';
+  recorder.start(); $('tRec').classList.add('on'); $('tRec').textContent = '■ Kaydediliyor';
+};
+function stopRec() { if (!recorder) return; recorder.stop(); recorder = null; $('tRec').classList.remove('on'); $('tRec').textContent = '● Video'; }
+
+// ---------------- worker / kuyruk ----------------
+let jobs = new Map(), libItems = [], onlySaved = false, tqdmLine = '';
+const exporting = new Set();
+
+function renderWorker(w) {
+  const st = w.status;
+  $('worker').className = `pill s-${st}`;
+  const label = { starting: 'model yükleniyor… (~2 dk)', ready: 'hazır', busy: 'üretiyor', dead: 'durdu — yeniden başlatılıyor' }[st] || st;
+  $('wstatus').textContent = `Worker: ${label}`;
+  const i = w.info || {};
+  $('winfo').textContent = [i.gpu, i.model, i.load_sec && `yükleme ${i.load_sec}s`, w.rss_gib && `RAM ${w.rss_gib} GiB`, w.restarts && `${w.restarts} yeniden başlatma`].filter(Boolean).join(' · ') || 'Durum bekleniyor…';
+}
+function renderJobs() {
+  const all = [...jobs.values()];
+  const active = all.filter((j) => j.status === 'queued' || j.status === 'running').length;
+  const qb = $('qBadge');
+  qb.textContent = all.length;
+  qb.classList.toggle('live', active > 0);
+  const list = all.sort((a, b) => b.created - a.created || b.id.localeCompare(a.id)).slice(0, 30);
+  $('jobs').innerHTML = list.length ? list.map((j) => {
+    const c = j.checks;
+    const chk = c ? `<div class="checks">${c.frames} kare · kök ${c.root_travel_m} m · max hız ${c.max_joint_speed_ms} m/s ${c.ok ? '✓' : '✗'}</div>` : '';
+    return `<div class="job">
+      <div class="p">${esc(j.prompt)}</div>
+      <div class="meta"><span class="st-${j.status}">${j.status}</span><span>${esc(j.name)}</span><span>${j.duration}s · ${j.steps} adım${j.seed != null ? ' · seed ' + j.seed : ''}${j.postprocess ? ' · ayak düzeltme' : ''}</span>${j.gen_sec ? `<span>${j.gen_sec}s</span>` : ''}
+      ${j.status === 'queued' ? `<button data-cancel="${esc(j.id)}" style="font-size:11px;padding:1px 6px">iptal</button>` : ''}</div>
+      ${j.status === 'running' && tqdmLine ? `<div class="tqdm">${esc(tqdmLine)}</div>` : ''}
+      ${j.message ? `<div class="meta st-failed">${esc(j.message)}</div>` : ''}${chk}
+      ${c && c.constraints ? `<div class="cres">◆ ${esc(constraintSummary(c))}</div>` : (j.constraints && j.constraints.length ? `<div class="cres">◆ ${j.constraints.length} kısıt</div>` : '')}
+    </div>`;
+  }).join('') : '<div class="empty">Henüz iş yok</div>';
+}
+$('jobs').onclick = async (e) => { const id = e.target.dataset.cancel; if (id) await api(`/api/jobs/${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(alert); };
+
+const logEl = $('log');
+function addLog(line) {
+  const atBottom = logEl.scrollTop + logEl.clientHeight >= logEl.scrollHeight - 4;
+  logEl.textContent += line + '\n';
+  if (logEl.textContent.length > 60000) logEl.textContent = logEl.textContent.slice(-40000);
+  if (atBottom) logEl.scrollTop = logEl.scrollHeight;
+}
+
+// ---------------- zaman çizelgesi + kısıtlar ----------------
+const SEG_COLORS = ['#4f8cff', '#3ecf8e', '#f5b041', '#ef5350', '#26c6da', '#ab47bc', '#8d6e63', '#78909c'];
+let segs = [{ prompt: 'A person walks forward and waves with the right hand.', duration: 4 }];
+let pathPts = [];   // [[x, z], ...] metre
+let keys = [];      // {type, source, source_frame, time, place}
+let pathRange = { start: 0, end: null };
+const totalDur = () => round2(segs.reduce((a, s) => a + Math.max(0.5, +s.duration || 0.5), 0));
+
+function fitSegHeights() {
+  for (const ta of $('segs').querySelectorAll('textarea')) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(Math.max(ta.scrollHeight + 2, 44), 140) + 'px';
+  }
+}
+
+function renderSegs() {
+  $('segs').innerHTML = segs.map((s, i) => `<div class="seg">
+    <div class="sw" style="background:${SEG_COLORS[i % 8]}"></div>
+    <textarea data-sp="${i}" rows="2" placeholder="A person ...">${esc(s.prompt)}</textarea>
+    <input data-sd="${i}" type="number" min="0.5" max="10" step="0.5" value="${s.duration}" title="saniye">
+    <button data-sx="${i}" type="button" title="Sil" ${segs.length < 2 ? 'disabled' : ''}>✕</button></div>`).join('');
+  fitSegHeights();
+  renderTimeline();
+}
+
+function pathSpan() {
+  const T = totalDur();
+  const s = Math.min(Math.max(+pathRange.start || 0, 0), Math.max(T - 0.5, 0));
+  const e = pathRange.end == null || pathRange.end === '' ? T : Math.min(Math.max(+pathRange.end, s + 0.5), T);
+  return [round2(s), round2(e)];
+}
+
+function syncConstraintBadges() {
+  const hasPath = pathPts.length >= 2;
+  const hasMoon = $('pMoon').checked;
+  const nKeys = keys.length;
+  const pb = $('pathBadge');
+  if (hasPath) {
+    const [ps, pe] = pathSpan();
+    const L = pathLen(pathPts);
+    pb.textContent = `${L.toFixed(1)} m (${ps}–${pe}s)`;
+    pb.className = 'badge ok';
+  } else {
+    pb.textContent = pathPts.length ? '1 nokta' : 'yol yok';
+    pb.className = 'badge';
+  }
+  const mb = $('moonBadge');
+  mb.textContent = hasMoon ? `açık · ${$('pMoonStep').value}s / ${$('pMoonHeel').value}°` : 'kapalı';
+  mb.className = 'badge' + (hasMoon ? ' on' : '');
+  const kb = $('keysBadge');
+  kb.textContent = `${nKeys} kare`;
+  kb.className = 'badge' + (nKeys ? ' on' : '');
+
+  const parts = [];
+  if (hasPath) parts.push('yol');
+  if (hasMoon) parts.push('moonwalk');
+  if (nKeys) parts.push(`${nKeys} kare`);
+  const cb = $('conBadge');
+  cb.textContent = parts.length ? parts.join(' · ') : 'serbest';
+  cb.className = 'badge' + (parts.length ? ' on' : '');
+}
+
+function renderTimeline() {
+  const T = totalDur() || 1;
+  $('tlSegs').innerHTML = segs.map((s, i) => {
+    const d = Math.max(0.5, +s.duration || 0.5);
+    return `<div style="width:${(d / T) * 100}%;background:${SEG_COLORS[i % 8]}" title="${esc(s.prompt)}">${d}s</div>`;
+  }).join('');
+  $('tlMarks').innerHTML = keys.map((k) => {
+    const pct = Math.max(0, Math.min(k.time / T, 1)) * 100;
+    return `<div style="left:calc(clamp(5px, ${pct.toFixed(2)}%, calc(100% - 5px)) - 1px)" title="${esc(keyLabel(k))} @ ${k.time}s"></div>`;
+  }).join('');
+  const [ps, pe] = pathSpan(), tp = $('tlPath');
+  tp.hidden = pathPts.length < 2;
+  tp.style.left = `${(ps / T) * 100}%`; tp.style.width = `${((pe - ps) / T) * 100}%`;
+  tp.title = `kök yolu: ${ps}–${pe} sn`;
+
+  const sel = $('pSeg');
+  let acc = 0, matched = null;
+  const opts = ['<option value="all">tüm süre</option>', '<option value="custom" hidden>özel aralık</option>'];
+  segs.forEach((s, i) => {
+    const a = round2(acc);
+    acc = round2(acc + Math.max(0.5, +s.duration || 0.5));
+    opts.push(`<option value="${i}">${i + 1}. segment (${a}–${acc} sn)</option>`);
+    if (matched === null && Math.abs(ps - a) < 0.02 && Math.abs(pe - acc) < 0.02) matched = String(i);
+  });
+  sel.innerHTML = opts.join('');
+  if (pathRange.end == null && ps === 0) sel.value = 'all';
+  else if (matched !== null) sel.value = matched;
+  else if (ps === 0 && Math.abs(pe - T) < 0.02) sel.value = 'all';
+  else sel.value = 'custom';
+
+  const over = T > 20;
+  const tb = $('tlBadge');
+  tb.textContent = `${T.toFixed(1)} / 20 sn`;
+  tb.className = 'badge' + (over ? ' bad' : '');
+  const outKeys = keys.filter((k) => k.time > T + 0.01).length;
+  $('tlInfo').innerHTML = `${segs.length} segment · ${keys.length} anahtar kare${over ? ' · <span style="color:var(--bad)">20 sn sınırını aşıyor</span>' : ''}${outKeys ? ` · <span style="color:var(--warn)">${outKeys} anahtar süre dışı</span>` : ''}`;
+  renderPathInfo();
+  syncConstraintBadges();
+}
+
+$('segs').oninput = (e) => {
+  const d = e.target.dataset;
+  if (d.sp != null) { segs[+d.sp].prompt = e.target.value; fitSegHeights(); }
+  if (d.sd != null) {
+    const v = parseFloat(e.target.value);
+    segs[+d.sd].duration = Number.isFinite(v) ? Math.max(0.5, Math.min(10, v)) : 0.5;
+    renderTimeline();
+  }
+};
+$('segs').onchange = (e) => {
+  const d = e.target.dataset;
+  if (d.sd != null) { e.target.value = segs[+d.sd].duration; renderTimeline(); }
+};
+$('segs').onclick = (e) => { const x = e.target.dataset.sx; if (x != null && segs.length > 1) { segs.splice(+x, 1); renderSegs(); } };
+$('addSeg').onclick = () => { if (segs.length < 8) { segs.push({ prompt: '', duration: 2 }); renderSegs(); } };
+
+// Kök yolu tuvali: x sağa, z aşağı; ±5 m
+const cv = $('pathCv'), cx = cv.getContext('2d'), RANGE = 5;
+const toPx = (x, z) => [(x + RANGE) / (2 * RANGE) * cv.width, (z + RANGE) / (2 * RANGE) * cv.height];
+const toM = (px, py) => [+(px / cv.width * 2 * RANGE - RANGE).toFixed(2), +(py / cv.height * 2 * RANGE - RANGE).toFixed(2)];
+function pathLen(p) { let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return L; }
+function drawPath(hoverPt = null) {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  cx.strokeStyle = '#1b202b'; cx.lineWidth = 1;
+  for (let m = -RANGE; m <= RANGE; m++) {
+    const [a] = toPx(m, 0), [, b] = toPx(0, m);
+    cx.beginPath(); cx.moveTo(a, 0); cx.lineTo(a, cv.height); cx.stroke();
+    cx.beginPath(); cx.moveTo(0, b); cx.lineTo(cv.width, b); cx.stroke();
+  }
+  cx.strokeStyle = '#333b4b'; const [ox, oy] = toPx(0, 0);
+  cx.beginPath(); cx.moveTo(ox, 0); cx.lineTo(ox, cv.height); cx.moveTo(0, oy); cx.lineTo(cv.width, oy); cx.stroke();
+  cx.fillStyle = '#8c94a6'; cx.font = '18px system-ui'; cx.fillText('+x', cv.width - 30, oy - 6); cx.fillText('+z', ox + 6, cv.height - 8);
+  if (hoverPt) {
+    cx.fillStyle = 'rgba(140,148,166,.9)'; cx.font = '16px ui-monospace, Consolas, monospace';
+    cx.fillText(`${hoverPt[0].toFixed(1)}, ${hoverPt[1].toFixed(1)} m`, 10, 22);
+  }
+  if (!pathPts.length) return;
+  cx.strokeStyle = '#3ecf8e'; cx.lineWidth = 4; cx.beginPath();
+  pathPts.forEach(([x, z], i) => { const [px, py] = toPx(x, z); i ? cx.lineTo(px, py) : cx.moveTo(px, py); });
+  cx.stroke();
+  if (pathPts.length >= 2) {
+    const [x1, z1] = pathPts[pathPts.length - 2], [x2, z2] = pathPts[pathPts.length - 1];
+    const [p1x, p1y] = toPx(x1, z1), [p2x, p2y] = toPx(x2, z2);
+    const ang = Math.atan2(p2y - p1y, p2x - p1x);
+    if (Math.hypot(p2x - p1x, p2y - p1y) > 12) {
+      cx.fillStyle = '#3ecf8e';
+      cx.beginPath();
+      cx.moveTo(p2x, p2y);
+      cx.lineTo(p2x - 16 * Math.cos(ang - 0.45), p2y - 16 * Math.sin(ang - 0.45));
+      cx.lineTo(p2x - 16 * Math.cos(ang + 0.45), p2y - 16 * Math.sin(ang + 0.45));
+      cx.closePath();
+      cx.fill();
+    }
+  }
+  pathPts.forEach(([x, z], i) => {
+    const [px, py] = toPx(x, z);
+    cx.fillStyle = i ? '#3ecf8e' : '#fff';
+    cx.beginPath(); cx.arc(px, py, i ? 6 : 9, 0, Math.PI * 2); cx.fill();
+  });
+}
+
+$('pStart').oninput = (e) => { pathRange.start = +e.target.value || 0; renderTimeline(); };
+$('pEnd').oninput = (e) => { pathRange.end = e.target.value === '' ? null : +e.target.value; renderTimeline(); };
+$('pSeg').onchange = (e) => {
+  const v = e.target.value;
+  if (v === 'all') pathRange = { start: 0, end: null };
+  else if (v !== 'custom') {
+    let a = 0;
+    for (let i = 0; i < +v; i++) a += Math.max(0.5, +segs[i].duration || 0.5);
+    const d = Math.max(0.5, +segs[+v].duration || 0.5);
+    pathRange = { start: round2(a), end: round2(a + d) };
+  }
+  $('pStart').value = pathRange.start; $('pEnd').value = pathRange.end ?? '';
+  renderTimeline();
+};
+
+function renderPathInfo() {
+  $('pathUndo').disabled = pathPts.length === 0;
+  $('pathClear').disabled = pathPts.length === 0;
+  if (pathPts.length < 2) { $('pathInfo').textContent = pathPts.length ? 'en az 2 nokta gerekli' : 'yol yok (serbest)'; return; }
+  const [ps, pe] = pathSpan();
+  const dt = Math.max(pe - ps, 0.1);
+  const L = pathLen(pathPts), v = L / dt;
+  const kind = v < 0.3 ? 'çok yavaş' : v < 1.8 ? 'yürüme' : v < 4 ? 'koşu' : 'çok hızlı!';
+  $('pathInfo').innerHTML = `${L.toFixed(1)} m / ${dt.toFixed(1)} sn · <b style="color:${v >= 4 ? 'var(--bad)' : 'var(--text)'}">${v.toFixed(2)} m/s</b> (${kind})`;
+}
+
+function canvasMeters(e) {
+  const r = cv.getBoundingClientRect();
+  return toM((e.clientX - r.left - cv.clientLeft) * cv.width / cv.clientWidth, (e.clientY - r.top - cv.clientTop) * cv.height / cv.clientHeight);
+}
+cv.onclick = (e) => { pathPts.push(canvasMeters(e)); drawPath(); renderTimeline(); };
+cv.onmousemove = (e) => drawPath(canvasMeters(e));
+cv.onmouseleave = () => drawPath();
+cv.oncontextmenu = (e) => { e.preventDefault(); pathPts.pop(); drawPath(); renderTimeline(); };
+$('pathUndo').onclick = () => { pathPts.pop(); drawPath(); renderTimeline(); };
+$('pathClear').onclick = () => { pathPts = []; drawPath(); renderTimeline(); };
+
+function syncMoonUi() {
+  $('moonParams').classList.toggle('dim', !$('pMoon').checked);
+  syncConstraintBadges();
+}
+$('pMoon').onchange = () => {
+  if ($('pMoon').checked && $('pFacing').value !== 'reverse') $('pFacing').value = 'reverse';
+  syncMoonUi();
+};
+$('pMoonStep').oninput = syncConstraintBadges;
+$('pMoonHeel').oninput = syncConstraintBadges;
+
+function syncCfgBadge() {
+  $('cfgBadge').textContent = `${$('steps').value || 50} adım · ×${$('count').value || 1}`;
+}
+$('steps').oninput = syncCfgBadge;
+$('count').oninput = syncCfgBadge;
+
+// Moonwalk hazır ayarı: ölçümle seçilen ayarlar (geri 3 m / 6 sn ≈ 0.5 m/s, ters bakış, ayak deseni,
+// MotionCorrection KAPALI — dansın özü olan kaymayı bastırıyor ve ayağı zemine sokuyor)
+$('moonPreset').onclick = () => {
+  segs = [{ prompt: 'A person does the moonwalk dance, gliding backwards while sliding the feet on the floor.', duration: 6 }];
+  pathPts = [[0, 0], [0, -3]]; pathRange = { start: 0, end: null }; keys = [];
+  $('pStart').value = 0; $('pEnd').value = '';
+  $('pFacing').value = 'reverse'; $('pMoon').checked = true; $('pMoonStep').value = 0.5; $('pMoonHeel').value = 50;
+  $('pp').checked = false; $('gf').checked = true;
+  $('secPath').open = true; $('secMoon').open = true;
+  syncMoonUi(); syncCfgBadge();
+  renderSegs(); renderKeys(); drawPath();
+  setGenMsg('Moonwalk ayarları yüklendi: ayak kayması düzeltme kapatıldı.', 'ok');
+};
+
+const KEY_NAMES = { pose: 'Poz', 'right-hand': 'Sağ el', 'left-hand': 'Sol el', 'right-foot': 'Sağ ayak', 'left-foot': 'Sol ayak' };
+const keyLabel = (k) => `${KEY_NAMES[k.type]}: ${k.source}#${k.source_frame}`;
+function renderKeys() {
+  $('keys').innerHTML = keys.length ? keys.map((k, i) => `<div class="key">
+    <div class="key-top">
+      <span class="lbl" title="${esc(keyLabel(k))}">◆ ${esc(keyLabel(k))}</span>
+      <button data-kx="${i}" type="button" title="Sil">✕</button>
+    </div>
+    <div class="key-bot">
+      <span>@</span>
+      <input data-kt="${i}" type="number" min="0" step="0.1" value="${k.time}" title="hedef saniye">
+      <span>sn</span>
+      <select data-kp="${i}" title="Konum">
+        ${['auto', 'path', 'origin', 'source'].map((p) => `<option value="${p}" ${k.place === p ? 'selected' : ''}>${{ auto: 'otomatik', path: 'yola', origin: 'orijine', source: 'kaynaktaki' }[p]}</option>`).join('')}
+      </select>
+    </div></div>`).join('') : '<div class="kv">Henüz anahtar kare yok.</div>';
+  renderTimeline();
+}
+$('keys').oninput = (e) => {
+  const d = e.target.dataset;
+  if (d.kt != null) { keys[+d.kt].time = Math.max(0, +e.target.value || 0); renderTimeline(); }
+  if (d.kp != null) keys[+d.kp].place = e.target.value;
+};
+$('keys').onclick = (e) => { const x = e.target.dataset.kx; if (x != null) { keys.splice(+x, 1); renderKeys(); } };
+$('addKey').onclick = () => {
+  if (!motion || (motion.item.legacy && !motion.item.has_view)) return alert('Önce kütüphaneden bir animasyon aç ve kareyi seç.');
+  const t = Math.min(+(frame / motion.fps).toFixed(1), totalDur());
+  keys.push({ type: $('keyType').value, source: motion.name, source_frame: frame, time: t, place: 'auto' });
+  $('secKeys').open = true;
+  renderKeys();
+};
+
+function constraintsPayload() {
+  const out = [];
+  if (pathPts.length >= 2) {
+    const [ps, pe] = pathSpan(), c = { type: 'root_path', points: pathPts };
+    if (ps > 0 || pe < totalDur()) { c.start = ps; c.end = pe; }
+    if ($('pFacing').value !== 'free') c.facing = $('pFacing').value;
+    out.push(c);
+    if ($('pMoon').checked) out.push({ type: 'moonwalk', start: ps, end: pe, step: +$('pMoonStep').value, heel_deg: +$('pMoonHeel').value });
+  }
+  for (const k of keys) {
+    const c = { source: k.source, source_frame: k.source_frame, time: k.time };
+    if (k.place !== 'auto') c.place = k.place;
+    out.push(k.type === 'pose' ? { type: 'pose', ...c } : { type: 'effector', effector: k.type, ...c });
+  }
+  return out;
+}
+function loadIntoForm(item) {
+  segs = (item.segments && item.segments.length) ? item.segments.map((s) => ({ prompt: s.prompt, duration: +s.duration })) :
+    [{ prompt: (item.prompt || '').replace(/^\(eski çıktı\) /, ''), duration: item.duration || 3 }];
+  pathPts = []; keys = []; pathRange = { start: 0, end: null };
+  $('pFacing').value = 'free'; $('pMoon').checked = false;
+  for (const c of item.constraints || []) {
+    if (c.type === 'root_path') {
+      pathPts = (c.points || []).map(([x, z]) => [x, z]);
+      pathRange = { start: c.start ?? 0, end: c.end ?? null };
+      $('pFacing').value = c.facing || 'free';
+    } else if (c.type === 'moonwalk') {
+      $('pMoon').checked = true; $('pMoonStep').value = c.step ?? 0.5; $('pMoonHeel').value = c.heel_deg ?? 50;
+    } else if ((c.type === 'pose' || c.type === 'effector') && c.source != null) {
+      keys.push({ type: c.type === 'pose' ? 'pose' : c.effector, source: c.source, source_frame: c.source_frame, time: c.time, place: c.place || 'auto' });
+    }
+  }
+  $('pStart').value = pathRange.start; $('pEnd').value = pathRange.end ?? '';
+  $('secPath').open = pathPts.length >= 2;
+  $('secMoon').open = $('pMoon').checked;
+  $('secKeys').open = keys.length > 0;
+  setTab('create');
+  syncMoonUi(); syncCfgBadge();
+  renderSegs(); renderKeys(); drawPath();
+}
+function constraintSummary(c) {
+  if (!c || !c.constraints) return '';
+  return c.constraints.map((r) => r.type === 'root_path'
+    ? `yol ort. ${r.mean_cm} / max ${r.max_cm} cm${r.heading_mean_deg != null ? ` · bakış ${r.heading_mean_deg}°` : ''}`
+    : r.type === 'pose' ? `poz@${r.frame} ort. ${r.mean_cm} cm`
+    : r.type === 'feet' ? `ayak deseni ort. ${r.mean_cm} / max ${r.max_cm} cm`
+    : `${KEY_NAMES[r.effector] || r.effector}@${r.frame} ${r.err_cm} cm`).join(' · ');
+}
+syncMoonUi(); syncCfgBadge();
+renderSegs(); renderKeys(); drawPath();
+
+function setGenMsg(text, kind = '', showQueueLink = false) {
+  const el = $('genmsg');
+  el.className = 'kv' + (kind === 'ok' ? ' msg-ok' : kind === 'err' ? ' msg-err' : '');
+  el.innerHTML = text ? `<span>${esc(text)}</span>${showQueueLink ? '<button type="button" class="link-btn" id="goQueue">Kuyruğu aç →</button>' : ''}` : '';
+  const gq = $('goQueue');
+  if (gq) gq.onclick = () => setTab('queue');
+}
+
+async function generate() {
+  const T = totalDur();
+  if (segs.some((s) => !s.prompt.trim())) return setGenMsg('Hata: boş segment var', 'err');
+  if (segs.some((s) => !(+s.duration >= 0.5 && +s.duration <= 10))) return setGenMsg('Hata: her segment süresi 0.5–10 sn olmalı', 'err');
+  if (T > 20) return setGenMsg('Hata: toplam süre 20 sn\'yi aşıyor', 'err');
+  if (pathPts.length === 1) return setGenMsg('Hata: kök yolunda tek nokta var — en az 2 nokta ekleyin veya temizleyin', 'err');
+  if ($('pMoon').checked && pathPts.length < 2) return setGenMsg('Hata: Moonwalk deseni için en az 2 noktalı bir yol çizin', 'err');
+  if ($('pMoon').checked && $('pFacing').value === 'free') return setGenMsg('Hata: Moonwalk deseni için Bakış "gidişin tersine" olmalı', 'err');
+  const nm = $('name').value.trim();
+  if (nm && (nm.startsWith('_') || !/^[A-Za-z0-9_-]{1,64}$/.test(nm))) return setGenMsg('Hata: isim yalnızca harf, rakam, - ve _ içerebilir', 'err');
+  const steps = Math.max(5, Math.min(200, Math.round(+$('steps').value || 50)));
+  const count = Math.max(1, Math.min(8, Math.round(+$('count').value || 1)));
+  $('steps').value = steps; $('count').value = count; syncCfgBadge();
+  const body = {
+    segments: segs.map((s) => ({ prompt: s.prompt.trim(), duration: +s.duration })),
+    steps, count,
+    seed: $('seed').value === '' ? null : +$('seed').value, name: nm || null,
+    postprocess: $('pp').checked, ground_fix: $('gf').checked, constraints: constraintsPayload(),
+  };
+  try {
+    const r = await api('/api/jobs', { method: 'POST', body: JSON.stringify(body) });
+    setGenMsg(`${r.jobs.length} iş kuyruğa eklendi`, 'ok', true);
+  } catch (e) { setGenMsg('Hata: ' + e.message, 'err'); }
+}
+$('gen').onclick = generate;
+$('restart').onclick = async () => { if (confirm('Worker yeniden başlatılsın mı? Çalışan iş iptal olur, model ~2 dk yeniden yüklenir.')) await api('/api/worker/restart', { method: 'POST' }).catch(alert); };
+
+// ---------------- kütüphane ----------------
+async function loadLib() { libItems = (await api('/api/library')).items; renderLib(); }
+function renderLib() {
+  const q = $('q').value.toLowerCase();
+  const list = libItems.filter((i) => (!onlySaved || i.saved) && (!q || (i.name + ' ' + i.prompt + ' ' + (i.note || '')).toLowerCase().includes(q)));
+  $('libCount').textContent = libItems.length ? (list.length === libItems.length ? `${libItems.length} kayıt` : `${list.length} / ${libItems.length}`) : '';
+  $('lib').innerHTML = list.length ? list.map((i) => {
+    const exports = [
+      i.has_bvh ? `<a class="btn" href="/files/${encodeURIComponent(i.name)}.bvh" download>BVH</a>` : '',
+      `<a class="btn" href="/files/${encodeURIComponent(i.name)}.npz" download>NPZ</a>`,
+      i.has_fbx
+        ? `<a class="btn" href="/files/${encodeURIComponent(i.name)}.fbx" download title="Skinli SOMA karakteri + animasyon${i.export ? ', hata ' + (i.export.vertex_err_max_m * 1e6).toFixed(0) + ' µm' : ''}">FBX</a><a class="btn" href="/files/${encodeURIComponent(i.name)}.glb" download>GLB</a>`
+        : (i.has_bvh ? `<button data-export="${esc(i.name)}" type="button" ${exporting.has(i.name) ? 'disabled' : ''} title="Headless Blender: skinli FBX + GLB (~10 sn)">${exporting.has(i.name) ? '… FBX' : '→ FBX'}</button>` : ''),
+    ].filter(Boolean).join('');
+    return `
+    <div class="item ${motion && motion.name === i.name ? 'active' : ''}" data-open="${esc(i.name)}">
+      <div class="item-head">
+        <div class="name">${i.saved ? '<span class="star">★</span> ' : ''}${esc(i.name)}</div>
+        ${i.duration ? `<span class="badge">${i.duration}s</span>` : ''}
+      </div>
+      <div class="p">${esc(i.prompt)}</div>
+      <div class="meta">${i.steps ? `<span>${i.steps} adım</span>` : ''}${i.seed != null ? `<span>seed ${i.seed}</span>` : ''}${i.postprocess ? '<span>ayak düzeltme</span>' : ''}<span>${esc((i.created || '').replace('T', ' ').slice(0, 16))}</span>
+      ${i.checks ? `<span class="${i.checks.ok ? 'msg-ok' : 'st-failed'}">${i.checks.ok ? '✓ doğrulandı' : '✗ doğrulama'}</span>` : ''}${i.has_view ? '' : '<span class="st-failed">görüntü yok</span>'}</div>
+      ${i.note ? `<div class="note-box">📝 ${esc(i.note)}</div>` : ''}
+      ${i.checks && i.checks.constraints ? `<div class="cres">◆ ${esc(constraintSummary(i.checks))}</div>` : ''}
+      <div class="item-foot">
+        <div class="acts">
+          <button data-save="${esc(i.name)}" type="button">${i.saved ? '★ Kayıtlı' : '☆ Kaydet'}</button>
+          <button data-rename="${esc(i.name)}" type="button">Ad</button>
+          <button data-note="${esc(i.name)}" type="button">Not</button>
+          <button data-again="${esc(i.name)}" type="button" title="Aynı ayarlarla forma yükle">Tekrar</button>
+          <button data-del="${esc(i.name)}" type="button" style="color:var(--bad);margin-left:auto">Sil</button>
+        </div>
+        <div class="acts exports"><span class="acts-lbl">İndir</span>${exports}</div>
+      </div>
+    </div>`;
+  }).join('') : '<div class="empty">Boş</div>';
+}
+$('lib').onclick = async (e) => {
+  if (e.target.closest('a')) return;
+  const t = e.target.closest('[data-save],[data-rename],[data-note],[data-del],[data-again],[data-export],[data-open]');
+  if (!t) return;
+  const d = t.dataset, name = d.save || d.rename || d.note || d.del || d.again || d.export || d.open;
+  const item = libItems.find((i) => i.name === name);
+  if (!item) return;
+  try {
+    if (d.export) {
+      if (exporting.has(d.export)) return;
+      exporting.add(d.export); renderLib();
+      try { await api(`/api/library/${encodeURIComponent(d.export)}/export`, { method: 'POST' }); }
+      finally { exporting.delete(d.export); renderLib(); }
+    }
+    else if (d.save) await api(`/api/library/${encodeURIComponent(d.save)}`, { method: 'PATCH', body: JSON.stringify({ saved: !item.saved }) });
+    else if (d.rename) {
+      const n = prompt('Yeni isim (harf, rakam, - _):', d.rename);
+      if (n && n !== d.rename) {
+        const res = await api(`/api/library/${encodeURIComponent(d.rename)}`, { method: 'PATCH', body: JSON.stringify({ rename: n, saved: true }) });
+        const finalName = res.name || n;
+        if (motion && motion.name === d.rename) {
+          motion.name = finalName;
+          motion.item.name = finalName;
+          $('vtitle').innerHTML = `<b>${esc(finalName)}</b> — ${esc(motion.item.prompt)}`;
+        }
+        let changed = false;
+        for (const k of keys) { if (k.source === d.rename) { k.source = finalName; changed = true; } }
+        if (changed) renderKeys();
+      }
+    }
+    else if (d.note) { const n = prompt('Not:', item.note || ''); if (n != null) await api(`/api/library/${encodeURIComponent(d.note)}`, { method: 'PATCH', body: JSON.stringify({ note: n }) }); }
+    else if (d.del) {
+      if (confirm(`"${d.del}" ve tüm dosyaları (BVH/NPZ) silinsin mi? Geri alınamaz.`)) {
+        await api(`/api/library/${encodeURIComponent(d.del)}`, { method: 'DELETE' });
+        if (motion && motion.name === d.del) clearMotion();
+      }
+    }
+    else if (d.again) {
+      loadIntoForm(item);
+      if (item.steps) $('steps').value = item.steps;
+      $('seed').value = item.seed ?? '';
+      $('pp').checked = item.postprocess !== undefined ? !!item.postprocess : true;
+      $('gf').checked = item.ground_fix !== false;
+      syncCfgBadge();
+      setGenMsg('Ayarlar forma yüklendi.', 'ok');
+    }
+    else if (d.open && item.has_view) await openMotion(item);
+  } catch (err) {
+    if (d.open) $('vtitle').textContent = 'Yükleme hatası: ' + err.message;
+    alert(err.message);
+  }
+};
+$('q').oninput = renderLib;
+$('onlySaved').onclick = () => { onlySaved = !onlySaved; $('onlySaved').classList.toggle('on', onlySaved); $('onlySaved').style.color = onlySaved ? 'var(--warn)' : ''; renderLib(); };
+$('importLegacy').onclick = async () => {
+  const btn = $('importLegacy');
+  try {
+    const r = await api('/api/import-legacy', { method: 'POST' });
+    btn.textContent = `${r.imported.length} kayıt içe aktarıldı`;
+    setTimeout(() => { loadLib().catch(() => {}); btn.textContent = 'Eski çıktıları içe aktar (kimodo/output)'; }, 2500);
+  } catch (e) { alert(e.message); }
+};
+
+// ---------------- canlı akış ----------------
+let es = null, retryTimer = null, isConnected = false;
+const off = window.__studioOffline;
+$('connCmd').textContent = off.startCommandText();
+
+function setConnected(ok) {
+  isConnected = ok;
+  $('connBox').hidden = ok;
+  $('restart').disabled = !ok;
+  if (ok) {
+    if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
+    $('connBox').classList.remove('ready8787');
+  }
+}
+
+async function showOffline() {
+  setConnected(false);
+  await off.renderOffline();
+}
+
+function scheduleRetry() {
+  if (retryTimer) return;
+  retryTimer = setTimeout(() => { retryTimer = null; if (!isConnected) connect(); }, 3000);
+}
+
+async function init() {
+  const s = await api('/api/status');
+  renderWorker(s.worker);
+  jobs.clear();
+  s.jobs.forEach((j) => jobs.set(j.id, j)); renderJobs();
+  logEl.textContent = ''; s.logs.forEach(addLog);
+  await loadLib();
+  setConnected(true);
+}
+let autoOpen = null;
+function connect() {
+  if (es) { es.close(); es = null; }
+  if (off.isFile) { showOffline(); scheduleRetry(); return; }
+  es = new EventSource('/api/events');
+  es.onopen = () => init().catch((e) => { console.error('init error:', e); showOffline(); scheduleRetry(); });
+  es.onmessage = (m) => {
+    const e = JSON.parse(m.data);
+    if (e.type === 'worker') renderWorker(e.worker);
+    else if (e.type === 'job') {
+      jobs.set(e.job.id, e.job);
+      if (e.job.status === 'running') tqdmLine = '';
+      if (e.job.status === 'done') autoOpen = e.job.name;
+      renderJobs();
+    }
+    else if (e.type === 'progress') {
+      if (e.data && e.data.stage === 'generating' && !tqdmLine) { tqdmLine = 'üretiliyor…'; renderJobs(); }
+    }
+    else if (e.type === 'tqdm') { tqdmLine = e.line; renderJobs(); }
+    else if (e.type === 'log') addLog(e.line);
+    else if (e.type === 'library') loadLib().then(() => {
+      if (autoOpen) { const it = libItems.find((i) => i.name === autoOpen); autoOpen = null; if (it && it.has_view) openMotion(it).catch(console.error); }
+    }).catch(console.error);
+  };
+  es.onerror = () => {
+    if (es) { es.close(); es = null; }
+    showOffline();
+    scheduleRetry();
+  };
+}
+
+$('btnReconnect').onclick = async () => {
+  const btn = $('btnReconnect');
+  btn.disabled = true; btn.textContent = 'Deneniyor…';
+  if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
+  try {
+    if (off.isFile) {
+      if (await off.probe8787()) location.href = off.studioUrl;
+      else await showOffline();
+    } else {
+      await init();
+      connect();
+    }
+  } catch { await showOffline(); scheduleRetry(); }
+  finally { btn.disabled = false; btn.textContent = '↻ Tekrar Bağlan'; }
+};
+
+$('btnCopyCmd').onclick = () => off.copyCmd();
+
+window.__studioModuleOk = true;
+connect();
+</script>
+<script>
+(() => {
+  const get = (id) => document.getElementById(id);
+  const isFile = location.protocol === 'file:';
+  const studioUrl = 'http://127.0.0.1:8787';
+  const wrongOrigin = isFile || (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') || (location.port && location.port !== '8787');
+
+  function startCommandText() {
+    if (isFile) {
+      const p = decodeURIComponent(location.pathname).replace(/^\/([A-Za-z]:)/, '$1').replace(/\//g, '\\');
+      const root = p.replace(/\\studio\\web\\index\.html$/i, '');
+      if (root && root !== p) return `"${root}\\Kimodo Studio.bat"`;
+    }
+    return 'powershell -NoProfile -ExecutionPolicy Bypass -File "E:\\Projeler\\amdcuda\\studio\\start.ps1"';
+  }
+
+  async function probe8787() {
+    try {
+      await fetch(`${studioUrl}/api/status`, { mode: 'no-cors', cache: 'no-store' });
+      return true;
+    } catch { return false; }
+  }
+
+  async function renderOffline() {
+    get('wstatus').textContent = 'Sunucuya bağlantı yok…';
+    get('worker').className = 'pill s-dead';
+    get('btnOpen8787').hidden = !wrongOrigin;
+    const box = get('connBox'), badge = get('connBadge'), msg = get('connMsg');
+    if (wrongOrigin && await probe8787()) {
+      box.classList.add('ready8787');
+      badge.textContent = '8787 çalışıyor';
+      badge.className = 'badge ok';
+      msg.innerHTML = 'Sunucu <b>http://127.0.0.1:8787</b> üzerinde çalışıyor. Doğrudan bu adresten açın.';
+      get('btnOpen8787').hidden = false;
+    } else if (!isFile && !window.__studioModuleOk && await fetch('/api/status', { cache: 'no-store' }).then((r) => r.ok).catch(() => false)) {
+      box.classList.remove('ready8787');
+      badge.textContent = '3D modül yüklenemedi';
+      badge.className = 'badge bad';
+      msg.innerHTML = 'Sunucu açık ancak 3D görüntüleyici modülleri (CDN) yüklenemedi. İnternet bağlantısını kontrol edip tekrar deneyin.';
+    } else {
+      box.classList.remove('ready8787');
+      badge.textContent = 'çevrimdışı';
+      badge.className = 'badge bad';
+      msg.innerHTML = wrongOrigin
+        ? 'Bu sayfa sunucu üzerinden açılmamış veya sunucu kapalı. Başlatmak için <b>Kimodo Studio.bat</b> dosyasını çalıştırıp aşağıdaki düğmeyi kullanın.'
+        : 'Kimodo Studio sunucusu çalışmıyor. Başlatmak için proje klasöründeki <b>Kimodo Studio.bat</b> dosyasını çalıştırın.';
+    }
+  }
+
+  async function copyCmd() {
+    const cmd = get('connCmd').textContent;
+    try {
+      await navigator.clipboard.writeText(cmd);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    const btn = get('btnCopyCmd');
+    btn.textContent = '✓ Kopyalandı';
+    setTimeout(() => { btn.textContent = '📋 Komutu Kopyala'; }, 2000);
+  }
+
+  window.__studioOffline = { isFile, studioUrl, startCommandText, probe8787, renderOffline, copyCmd };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.__studioModuleOk) return;
+    get('connCmd').textContent = startCommandText();
+    get('btnCopyCmd').onclick = copyCmd;
+    const show = () => {
+      get('connBox').hidden = false;
+      get('restart').disabled = true;
+      return renderOffline();
+    };
+    get('btnReconnect').onclick = async () => {
+      const btn = get('btnReconnect');
+      btn.disabled = true; btn.textContent = 'Deneniyor…';
+      try {
+        if (isFile && await probe8787()) location.href = studioUrl;
+        else if (!isFile) location.reload();
+        else await show();
+      } finally {
+        btn.disabled = false; btn.textContent = '↻ Tekrar Bağlan';
+      }
+    };
+    show();
+    setInterval(show, 3000);
+  });
+})();
+</script>
+</body>
+</html>

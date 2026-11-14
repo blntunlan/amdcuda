@@ -1,0 +1,269 @@
+{
+ "camera": "KMD_Cam",
+ "level": "/Game/_Harness/L_HarnessStudio",
+ "width": 768,
+ "height": 768,
+ "view": {
+  "location": [
+   240.0,
+   900.0,
+   150.0
+  ],
+  "rotation": [
+   -4.0,
+   -90.0,
+   -0.0
+  ],
+  "fov": 55.0
+ },
+ "actors": [
+  {
+   "name": "KMD_0_0",
+   "class": "SkeletalMeshActor",
+   "location": [
+    -10.8,
+    -59.6,
+    0.0
+   ],
+   "bounds_centre": [
+    -10.8,
+    -60.6,
+    81.1
+   ],
+   "bounds_extent": [
+    81.8,
+    55.5,
+    101.4
+   ],
+   "distance": 995.2,
+   "pixel": [
+    193,
+    447
+   ],
+   "box": [
+    112,
+    306,
+    262,
+    470
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_0_1",
+   "class": "SkeletalMeshActor",
+   "location": [
+    133.2,
+    -219.0,
+    0.0
+   ],
+   "bounds_centre": [
+    133.2,
+    -220.0,
+    81.1
+   ],
+   "bounds_extent": [
+    81.8,
+    55.5,
+    101.4
+   ],
+   "distance": 1127.2,
+   "pixel": [
+    314,
+    431
+   ],
+   "box": [
+    253,
+    310,
+    368,
+    450
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_1_0",
+   "class": "SkeletalMeshActor",
+   "location": [
+    -10.3,
+    -277.2,
+    0.0
+   ],
+   "bounds_centre": [
+    -10.1,
+    -269.3,
+    90.4
+   ],
+   "bounds_extent": [
+    58.5,
+    21.6,
+    90.5
+   ],
+   "distance": 1197.2,
+   "pixel": [
+    228,
+    426
+   ],
+   "box": [
+    185,
+    312,
+    266,
+    428
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_0_2",
+   "class": "SkeletalMeshActor",
+   "location": [
+    283.8,
+    -379.0,
+    0.0
+   ],
+   "bounds_centre": [
+    283.8,
+    -380.0,
+    81.1
+   ],
+   "bounds_extent": [
+    81.8,
+    55.5,
+    101.4
+   ],
+   "distance": 1282.6,
+   "pixel": [
+    409,
+    419
+   ],
+   "box": [
+    361,
+    313,
+    460,
+    435
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_1_1",
+   "class": "SkeletalMeshActor",
+   "location": [
+    134.3,
+    -430.2,
+    0.0
+   ],
+   "bounds_centre": [
+    134.6,
+    -422.3,
+    90.4
+   ],
+   "bounds_extent": [
+    58.5,
+    21.6,
+    90.5
+   ],
+   "distance": 1327.8,
+   "pixel": [
+    326,
+    415
+   ],
+   "box": [
+    291,
+    315,
+    358,
+    417
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_1_2",
+   "class": "SkeletalMeshActor",
+   "location": [
+    285.2,
+    -583.8,
+    0.0
+   ],
+   "bounds_centre": [
+    285.5,
+    -575.9,
+    90.4
+   ],
+   "bounds_extent": [
+    58.5,
+    21.6,
+    90.5
+   ],
+   "distance": 1477.8,
+   "pixel": [
+    406,
+    407
+   ],
+   "box": [
+    377,
+    317,
+    437,
+    408
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_0_3",
+   "class": "SkeletalMeshActor",
+   "location": [
+    417.1,
+    -581.8,
+    0.0
+   ],
+   "bounds_centre": [
+    417.1,
+    -582.8,
+    81.1
+   ],
+   "bounds_extent": [
+    81.8,
+    55.5,
+    101.4
+   ],
+   "distance": 1494.9,
+   "pixel": [
+    472,
+    407
+   ],
+   "box": [
+    429,
+    315,
+    518,
+    420
+   ],
+   "in_frame": true
+  },
+  {
+   "name": "KMD_1_3",
+   "class": "SkeletalMeshActor",
+   "location": [
+    419.6,
+    -778.5,
+    0.0
+   ],
+   "bounds_centre": [
+    419.9,
+    -770.6,
+    90.4
+   ],
+   "bounds_extent": [
+    58.5,
+    21.6,
+    90.5
+   ],
+   "distance": 1681.3,
+   "pixel": [
+    463,
+    398
+   ],
+   "box": [
+    437,
+    319,
+    491,
+    399
+   ],
+   "in_frame": true
+  }
+ ]
+}

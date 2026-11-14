@@ -1,0 +1,35 @@
+{
+  "project": "RX6650-CUDA-Bridge",
+  "profile_version": "0.2.0",
+  "tier": "all",
+  "timestamp_utc": "2026-11-13T10:20:42.425448+00:00",
+  "host_os": "Linux",
+  "target_gpu": "RX 6650 XT",
+  "llvm_target": "gfx1032",
+  "overall": "BLOCKED",
+  "hardware_verified": false,
+  "elapsed_seconds": 1.633,
+  "stages": [
+    {
+      "name": "target-profile",
+      "status": "PASS",
+      "detail": "Strict gfx1032 target and safety rules verified"
+    },
+    {
+      "name": "unit-tests",
+      "status": "PASS",
+      "detail": "test_python_smoke_source_compiles (test_cli.CommandLineTests.test_python_smoke_source_compiles) ... ok\ntest_roadmap_has_explicit_blocked_status (test_cli.CommandLineTests.test_roadmap_has_explicit_blocked_status) ... ok\ntest_runner_help (test_cli.CommandLineTests.test_runner_help) ... ok\ntest_accept_exact_target (test_verification.DiagnosticTests.test_accept_exact_target) ... ok\ntest_accept_vendor_specific_gpu_name (test_verification.DiagnosticTests.test_accept_vendor_specific_gpu_name) ... ok\ntest_blocks_secondary_nvidia (test_verification.DiagnosticTests.test_blocks_secondary_nvidia) ... ok\ntest_multiple_targets_require_explicit_selection (test_verification.DiagnosticTests.test_multiple_targets_require_explicit_selection) ... ok\ntest_reject_other_gpu (test_verification.DiagnosticTests.test_reject_other_gpu) ... ok\ntest_rejects_bad_flag (test_verification.DiagnosticTests.test_rejects_bad_flag) ... ok\ntest_bad_output_is_failed (test_verification.HardwareClassificationTests.test_bad_output_is_failed) ... ok\ntest_false_numeric_result_is_failed (test_verification.HardwareClassificationTests.test_false_numeric_result_is_failed) ... ok\ntest_missing_error_value_does_not_pass (test_verification.HardwareClassificationTests.test_missing_error_value_does_not_pass) ... ok\ntest_no_runtime_is_blocked (test_verification.HardwareClassificationTests.test_no_runtime_is_blocked) ... ok\ntest_overall_blocked_not_pass (test_verification.HardwareClassificationTests.test_overall_blocked_not_pass) ... ok\ntest_overall_fail_higher_priority (test_verification.HardwareClassificationTests.test_overall_fail_higher_priority) ... ok\ntest_overall_pass (test_verification.HardwareClassificationTests.test_overall_pass) ... ok\ntest_true_numeric_result_passes (test_verification.HardwareClassificationTests.test_true_numeric_result_passes) ... ok\ntest_real_profile_strict_and_safe (test_verification.ProfileTests.test_real_profile_strict_and_safe) ... ok\ntest_rejects_unsafe_binary_changes (test_verification.ProfileTests.test_rejects_unsafe_binary_changes) ... ok\ntest_rejects_wrong_arch (test_verification.ProfileTests.test_rejects_wrong_arch) ... ok\ntest_rejects_wrong_card (test_verification.ProfileTests.test_rejects_wrong_card) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.751s\n\nOK",
+      "exit_code": 0
+    },
+    {
+      "name": "windows-diagnostic",
+      "status": "BLOCKED",
+      "detail": "Actual Windows RX 6650 XT machine required; host is Linux"
+    },
+    {
+      "name": "gpu-matmul",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    }
+  ]
+}

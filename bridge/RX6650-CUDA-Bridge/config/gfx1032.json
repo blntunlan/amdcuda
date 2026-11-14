@@ -1,0 +1,22 @@
+{
+  "project": "RX6650-CUDA-Bridge",
+  "profile_version": "0.6.1",
+  "windows_only": true,
+  "target_gpu": "AMD Radeon RX 6650 XT",
+  "llvm_target": "gfx1032",
+  "architecture": "RDNA2 / Navi 23",
+  "vram_gb_nominal": 8,
+  "device_allowlist": [
+    "RX 6650 XT"
+  ],
+  "backends": [
+    "rocm-native",
+    "zluda"
+  ],
+  "safety": {
+    "no_driver_modification": true,
+    "no_global_cuda_dll_overrides": true,
+    "no_automatic_binary_downloads": true,
+    "no_auto_hsa_override": true
+  }
+}

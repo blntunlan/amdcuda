@@ -1,0 +1,29 @@
+name: RX6650-Bridge software tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install 4K CPU verification dependencies
+        run: python -m pip install -r requirements-4k.txt
+      - name: Verify profile and run all offline unit tests
+        run: python scripts/run-tests.py --tier unit
+      - name: Publish test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-${{ matrix.os }}
+          path: reports/verification.json
+          if-no-files-found: warn

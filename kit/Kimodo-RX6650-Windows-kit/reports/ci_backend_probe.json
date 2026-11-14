@@ -1,0 +1,12 @@
+{
+  "timestamp_utc": "2026-11-13T21:15:26.066485+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "python": "3.13.5",
+  "status": "BLOCKED",
+  "reason": "PyTorch GPU backend not available",
+  "gpu_compute": "NOT_RUN",
+  "torch_version": "2.10.0+cpu",
+  "torch_hip": "",
+  "torch_cuda": "",
+  "device": ""
+}

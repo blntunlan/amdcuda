@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kimodo-studio",
+      "runtimeExecutable": "E:/Projeler/amdcuda/studio/server/target/release/kimodo-studio.exe",
+      "runtimeArgs": [],
+      "port": 8787
+    }
+  ]
+}

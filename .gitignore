@@ -1,0 +1,24 @@
+# Build & Python caches
+target/
+__pycache__/
+*.pyc
+.venv*/
+
+# Archives & large generated outputs
+*.zip
+studio/library/
+studio/export/
+studio/soak/out/
+studio/soak/*.log
+studio/unreal/*.fbx
+*.blend
+*.blend1
+
+# Bridge generated materials & local hardware reports
+bridge/RX6650-CUDA-Bridge/reports/materials/
+bridge/RX6650-CUDA-Bridge/reports/*.json
+bridge/RX6650-CUDA-Bridge/reports/*local*
+
+# OS artifacts
+.DS_Store
+Thumbs.db

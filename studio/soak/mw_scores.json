@@ -1,0 +1,145 @@
+{
+ "moonwalk-serbest": {
+  "frames": 180,
+  "back_m": 2.84,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.4,
+  "heel_anti_corr": -0.06,
+  "alternations": 8,
+  "glide_ratio": 0.02,
+  "jerk_p99": 37.9
+ },
+ "moonwalk-a-s1-ham": {
+  "frames": 180,
+  "back_m": 2.99,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.3,
+  "heel_anti_corr": -0.29,
+  "alternations": 8,
+  "glide_ratio": 0.0,
+  "jerk_p99": 33.3
+ },
+ "moonwalk-a-s1-pp": {
+  "frames": 180,
+  "back_m": 2.93,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -2.6,
+  "heel_anti_corr": -0.28,
+  "alternations": 8,
+  "glide_ratio": 0.07,
+  "jerk_p99": 37.7
+ },
+ "moonwalk-a-s2-ham": {
+  "frames": 180,
+  "back_m": 2.98,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.9,
+  "heel_anti_corr": -0.38,
+  "alternations": 7,
+  "glide_ratio": 0.04,
+  "jerk_p99": 25.2
+ },
+ "moonwalk-a-s2-pp": {
+  "frames": 180,
+  "back_m": 2.94,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -1.8,
+  "heel_anti_corr": -0.36,
+  "alternations": 7,
+  "glide_ratio": 0.04,
+  "jerk_p99": 27.3
+ },
+ "moonwalk-a-s3-ham": {
+  "frames": 180,
+  "back_m": 2.97,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.5,
+  "heel_anti_corr": -0.54,
+  "alternations": 8,
+  "glide_ratio": 0.2,
+  "jerk_p99": 23.4
+ },
+ "moonwalk-a-s3-pp": {
+  "frames": 180,
+  "back_m": 2.94,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -3.3,
+  "heel_anti_corr": -0.51,
+  "alternations": 8,
+  "glide_ratio": 0.16,
+  "jerk_p99": 23.5
+ },
+ "moonwalk-b-s1-ham": {
+  "frames": 180,
+  "back_m": 3.03,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.8,
+  "heel_anti_corr": -0.34,
+  "alternations": 8,
+  "glide_ratio": 0.05,
+  "jerk_p99": 27.4
+ },
+ "moonwalk-b-s1-pp": {
+  "frames": 180,
+  "back_m": 2.9,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -2.2,
+  "heel_anti_corr": -0.34,
+  "alternations": 10,
+  "glide_ratio": 0.07,
+  "jerk_p99": 28.1
+ },
+ "moonwalk-b-s2-ham": {
+  "frames": 180,
+  "back_m": 3.02,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.4,
+  "heel_anti_corr": -0.47,
+  "alternations": 7,
+  "glide_ratio": 0.03,
+  "jerk_p99": 17.6
+ },
+ "moonwalk-b-s2-pp": {
+  "frames": 180,
+  "back_m": 2.93,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -1.4,
+  "heel_anti_corr": -0.44,
+  "alternations": 7,
+  "glide_ratio": 0.07,
+  "jerk_p99": 18.2
+ },
+ "moonwalk-b-s3-ham": {
+  "frames": 180,
+  "back_m": 2.98,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -0.5,
+  "heel_anti_corr": -0.64,
+  "alternations": 10,
+  "glide_ratio": 0.06,
+  "jerk_p99": 21.2
+ },
+ "moonwalk-b-s3-pp": {
+  "frames": 180,
+  "back_m": 2.95,
+  "contact": 1.0,
+  "airborne": 0,
+  "penetration_cm": -3.9,
+  "heel_anti_corr": -0.62,
+  "alternations": 10,
+  "glide_ratio": 0.07,
+  "jerk_p99": 22.8
+ }
+}

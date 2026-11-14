@@ -1,0 +1,79 @@
+{
+  "project": "RX6650-CUDA-Bridge",
+  "profile_version": "0.6.0",
+  "tier": "all",
+  "timestamp_utc": "2026-11-13T15:01:21.944250+00:00",
+  "host_os": "Linux",
+  "target_gpu": "RX 6650 XT",
+  "llvm_target": "gfx1032",
+  "overall": "BLOCKED",
+  "hardware_verified": false,
+  "elapsed_seconds": 6.913,
+  "stages": [
+    {
+      "name": "target-profile",
+      "status": "PASS",
+      "detail": "Strict gfx1032 target and safety rules verified"
+    },
+    {
+      "name": "unit-tests",
+      "status": "PASS",
+      "detail": "... ok\ntest_gpu_numeric_mismatch_rejected (test_pbr_verification.PBRVerificationTests.test_gpu_numeric_mismatch_rejected) ... ok\ntest_gpu_one_iteration_rejected (test_pbr_verification.PBRVerificationTests.test_gpu_one_iteration_rejected) ... ok\ntest_gpu_peak_over_budget_rejected (test_pbr_verification.PBRVerificationTests.test_gpu_peak_over_budget_rejected) ... ok\ntest_gpu_wrong_device_blocks (test_pbr_verification.PBRVerificationTests.test_gpu_wrong_device_blocks) ... ok\ntest_cpu_fallback_rejected (test_primitives_backend.OperationsTests.test_cpu_fallback_rejected) ... ok\ntest_cpu_pytorch_rejected (test_primitives_backend.OperationsTests.test_cpu_pytorch_rejected) ... ok\ntest_duplicate_operation (test_primitives_backend.OperationsTests.test_duplicate_operation) ... ok\ntest_failed_transfer_rejected (test_primitives_backend.OperationsTests.test_failed_transfer_rejected) ... ok\ntest_incomplete_iterations_rejected (test_primitives_backend.OperationsTests.test_incomplete_iterations_rejected) ... ok\ntest_incorrect_order (test_primitives_backend.OperationsTests.test_incorrect_order) ... ok\ntest_infinity_runtime_rejected (test_primitives_backend.OperationsTests.test_infinity_runtime_rejected) ... ok\ntest_matmul_mismatch_rejected (test_primitives_backend.OperationsTests.test_matmul_mismatch_rejected) ... ok\ntest_missing_compute_confirmation_rejected (test_primitives_backend.OperationsTests.test_missing_compute_confirmation_rejected) ... ok\ntest_missing_operation (test_primitives_backend.OperationsTests.test_missing_operation) ... ok\ntest_missing_suite (test_primitives_backend.OperationsTests.test_missing_suite) ... ok\ntest_nan_error_rejected (test_primitives_backend.OperationsTests.test_nan_error_rejected) ... ok\ntest_negative_elapsed_rejected (test_primitives_backend.OperationsTests.test_negative_elapsed_rejected) ... ok\ntest_operation_non_dict_fails (test_primitives_backend.OperationsTests.test_operation_non_dict_fails) ... ok\ntest_unsuccessful_suite_rejected (test_primitives_backend.OperationsTests.test_unsuccessful_suite_rejected) ... ok\ntest_valid_suite (test_primitives_backend.OperationsTests.test_valid_suite) ... ok\ntest_wrong_arch_rejected (test_primitives_backend.OperationsTests.test_wrong_arch_rejected) ... ok\ntest_wrong_target_rejected (test_primitives_backend.OperationsTests.test_wrong_target_rejected) ... ok\ntest_boolean_iterations_not_accepted (test_primitives_backend.ParametersTests.test_boolean_iterations_not_accepted) ... ok\ntest_defaults_allowed (test_primitives_backend.ParametersTests.test_defaults_allowed) ... ok\ntest_negative_sizes_rejected (test_primitives_backend.ParametersTests.test_negative_sizes_rejected) ... ok\ntest_too_few_iterations_rejected (test_primitives_backend.ParametersTests.test_too_few_iterations_rejected) ... ok\ntest_too_large_allocations_rejected (test_primitives_backend.ParametersTests.test_too_large_allocations_rejected) ... ok\ntest_execution_error_rejected (test_primitives_backend.ResultClassificationTests.test_execution_error_rejected) ... ok\ntest_import_failure_blocked (test_primitives_backend.ResultClassificationTests.test_import_failure_blocked) ... ok\ntest_invalid_json_rejected (test_primitives_backend.ResultClassificationTests.test_invalid_json_rejected) ... ok\ntest_nonzero_exit_overrides_valid_payload (test_primitives_backend.ResultClassificationTests.test_nonzero_exit_overrides_valid_payload) ... ok\ntest_parameters_error_rejected (test_primitives_backend.ResultClassificationTests.test_parameters_error_rejected) ... ok\ntest_valid_suite_and_exit_code (test_primitives_backend.ResultClassificationTests.test_valid_suite_and_exit_code) ... ok\ntest_manifest_path_traversal_is_rejected (test_release.ReleaseTests.test_manifest_path_traversal_is_rejected) ... ok\ntest_manifest_verifies_actual_code (test_release.ReleaseTests.test_manifest_verifies_actual_code) ... ok\ntest_tampering_is_detected (test_release.ReleaseTests.test_tampering_is_detected) ... ok\ntest_accept_exact_target (test_verification.DiagnosticTests.test_accept_exact_target) ... ok\ntest_accept_vendor_specific_gpu_name (test_verification.DiagnosticTests.test_accept_vendor_specific_gpu_name) ... ok\ntest_blocks_secondary_nvidia (test_verification.DiagnosticTests.test_blocks_secondary_nvidia) ... ok\ntest_multiple_targets_require_explicit_selection (test_verification.DiagnosticTests.test_multiple_targets_require_explicit_selection) ... ok\ntest_reject_other_gpu (test_verification.DiagnosticTests.test_reject_other_gpu) ... ok\ntest_rejects_bad_flag (test_verification.DiagnosticTests.test_rejects_bad_flag) ... ok\ntest_bad_output_is_failed (test_verification.HardwareClassificationTests.test_bad_output_is_failed) ... ok\ntest_false_numeric_result_is_failed (test_verification.HardwareClassificationTests.test_false_numeric_result_is_failed) ... ok\ntest_missing_error_value_does_not_pass (test_verification.HardwareClassificationTests.test_missing_error_value_does_not_pass) ... ok\ntest_no_runtime_is_blocked (test_verification.HardwareClassificationTests.test_no_runtime_is_blocked) ... ok\ntest_overall_blocked_not_pass (test_verification.HardwareClassificationTests.test_overall_blocked_not_pass) ... ok\ntest_overall_fail_higher_priority (test_verification.HardwareClassificationTests.test_overall_fail_higher_priority) ... ok\ntest_overall_pass (test_verification.HardwareClassificationTests.test_overall_pass) ... ok\ntest_true_numeric_result_passes (test_verification.HardwareClassificationTests.test_true_numeric_result_passes) ... ok\ntest_real_profile_strict_and_safe (test_verification.ProfileTests.test_real_profile_strict_and_safe) ... ok\ntest_rejects_unsafe_binary_changes (test_verification.ProfileTests.test_rejects_unsafe_binary_changes) ... ok\ntest_rejects_wrong_arch (test_verification.ProfileTests.test_rejects_wrong_arch) ... ok\ntest_rejects_wrong_card (test_verification.ProfileTests.test_rejects_wrong_card) ... ok\n\n----------------------------------------------------------------------\nRan 180 tests in 4.856s\n\nOK",
+      "exit_code": 0
+    },
+    {
+      "name": "pbr-cpu",
+      "status": "PASS",
+      "detail": "7 PBR maps exported/reimported; normal and ORM checks passed (CPU only)",
+      "exit_code": 0,
+      "metrics": {
+        "stage": "pbr-cpu",
+        "ok": true,
+        "output_dir": "/mnt/data/work_v06/RX6650-CUDA-Bridge/reports/pbr-cpu-smoke",
+        "roundtrip_verified": true,
+        "orm_verified": true,
+        "normal_max_length_error": 0.004802,
+        "map_count": 7,
+        "maps": [
+          "BaseColor",
+          "Normal",
+          "Roughness",
+          "Metallic",
+          "AO",
+          "ORM",
+          "Height"
+        ],
+        "width": 64,
+        "height": 64,
+        "normal_format": "directx",
+        "gpu_compute_confirmed": false,
+        "elapsed_seconds": 0.0266
+      }
+    },
+    {
+      "name": "windows-diagnostic",
+      "status": "BLOCKED",
+      "detail": "Actual Windows RX 6650 XT machine required; host is Linux"
+    },
+    {
+      "name": "gpu-matmul",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    },
+    {
+      "name": "gpu-primitives",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    },
+    {
+      "name": "gpu-vram-budget",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    },
+    {
+      "name": "gpu-pbr",
+      "status": "BLOCKED",
+      "detail": "Native gfx1032 GPU prerequisite and PBR CPU suite must PASS first"
+    }
+  ]
+}

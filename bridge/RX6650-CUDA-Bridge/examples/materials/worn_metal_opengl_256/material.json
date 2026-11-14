@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "preset": "worn_metal",
+  "seed": 6650,
+  "normal_format": "opengl",
+  "normal_strength": 4.0,
+  "width": 256,
+  "height": 256,
+  "maps": {
+    "BaseColor": "BaseColor.png",
+    "Normal": "Normal.png",
+    "Roughness": "Roughness.png",
+    "Metallic": "Metallic.png",
+    "AO": "AO.png",
+    "ORM": "ORM.png",
+    "Height": "Height.png"
+  },
+  "backend": "cpu-reference",
+  "roundtrip_verified": true,
+  "normal_max_length_error": 0.0045471,
+  "orm_verified": true,
+  "map_count": 7,
+  "color_space": {
+    "BaseColor": "sRGB",
+    "Normal": "linear-data",
+    "Roughness": "linear-data",
+    "Metallic": "linear-data",
+    "AO": "linear-data",
+    "ORM": "linear-data",
+    "Height": "linear-data"
+  },
+  "orm_channels": {
+    "R": "AO",
+    "G": "Roughness",
+    "B": "Metallic"
+  },
+  "license": "Generated procedural content; no third-party assets"
+}

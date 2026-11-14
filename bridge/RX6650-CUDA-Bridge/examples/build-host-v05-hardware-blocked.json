@@ -1,0 +1,45 @@
+{
+  "project": "RX6650-CUDA-Bridge",
+  "profile_version": "0.5.0",
+  "tier": "all",
+  "timestamp_utc": "2026-11-13 (example only; actual timestamp omitted)",
+  "host_os": "Linux",
+  "target_gpu": "RX 6650 XT",
+  "llvm_target": "gfx1032",
+  "overall": "BLOCKED",
+  "hardware_verified": false,
+  "elapsed_seconds": "example; host-specific value omitted",
+  "stages": [
+    {
+      "name": "target-profile",
+      "status": "PASS",
+      "detail": "Strict gfx1032 target and safety rules verified"
+    },
+    {
+      "name": "unit-tests",
+      "status": "PASS",
+      "detail": "125 tests ran successfully on the build host (this is an illustrative report).",
+      "exit_code": 0
+    },
+    {
+      "name": "windows-diagnostic",
+      "status": "BLOCKED",
+      "detail": "Actual Windows RX 6650 XT machine required; host is Linux"
+    },
+    {
+      "name": "gpu-matmul",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    },
+    {
+      "name": "gpu-primitives",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    },
+    {
+      "name": "gpu-vram-budget",
+      "status": "BLOCKED",
+      "detail": "Diagnostic did not run on the target Windows GPU"
+    }
+  ]
+}

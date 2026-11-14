@@ -1,0 +1,94 @@
+[
+  {
+    "prompt": "A person walks forward.",
+    "duration": 4.0,
+    "sec_off": 50.33,
+    "off": {
+      "foot_skate_from_pred_contacts": 0.0586,
+      "foot_skate_max_vel": 0.2931,
+      "foot_skate_from_height": 0.5554,
+      "min_foot_y": -0.0023,
+      "contact_ratio": 0.371
+    },
+    "sec_on": 36.93,
+    "on": {
+      "foot_skate_from_pred_contacts": 0.0352,
+      "foot_skate_max_vel": 0.1452,
+      "foot_skate_from_height": 0.7906,
+      "min_foot_y": -0.0067,
+      "contact_ratio": 0.378
+    },
+    "joint_shift_mean_cm": 0.06,
+    "joint_shift_max_cm": 2.78,
+    "finite": true
+  },
+  {
+    "prompt": "A person runs in a circle.",
+    "duration": 5.0,
+    "sec_off": 16.69,
+    "off": {
+      "foot_skate_from_pred_contacts": 0.1051,
+      "foot_skate_max_vel": 0.283,
+      "foot_skate_from_height": 0.819,
+      "min_foot_y": -0.0099,
+      "contact_ratio": 0.222
+    },
+    "sec_on": 13.07,
+    "on": {
+      "foot_skate_from_pred_contacts": 0.0517,
+      "foot_skate_max_vel": 0.1482,
+      "foot_skate_from_height": 0.8193,
+      "min_foot_y": -0.0055,
+      "contact_ratio": 0.221
+    },
+    "joint_shift_mean_cm": 0.11,
+    "joint_shift_max_cm": 6.48,
+    "finite": true
+  },
+  {
+    "prompt": "A person walks forward and waves with the right hand.",
+    "duration": 4.0,
+    "sec_off": 14.79,
+    "off": {
+      "foot_skate_from_pred_contacts": 0.0704,
+      "foot_skate_max_vel": 0.2437,
+      "foot_skate_from_height": 0.4482,
+      "min_foot_y": -0.0059,
+      "contact_ratio": 0.383
+    },
+    "sec_on": 21.95,
+    "on": {
+      "foot_skate_from_pred_contacts": 0.0413,
+      "foot_skate_max_vel": 0.1495,
+      "foot_skate_from_height": 0.6987,
+      "min_foot_y": -0.0085,
+      "contact_ratio": 0.389
+    },
+    "joint_shift_mean_cm": 0.08,
+    "joint_shift_max_cm": 3.29,
+    "finite": true
+  },
+  {
+    "prompt": "A person walks backwards slowly.",
+    "duration": 4.0,
+    "sec_off": 13.48,
+    "off": {
+      "foot_skate_from_pred_contacts": 0.0984,
+      "foot_skate_max_vel": 0.2595,
+      "foot_skate_from_height": 1.2899,
+      "min_foot_y": -0.0013,
+      "contact_ratio": 0.35
+    },
+    "sec_on": 15.68,
+    "on": {
+      "foot_skate_from_pred_contacts": 0.0649,
+      "foot_skate_max_vel": 0.1481,
+      "foot_skate_from_height": 1.6455,
+      "min_foot_y": -0.0218,
+      "contact_ratio": 0.346
+    },
+    "joint_shift_mean_cm": 0.15,
+    "joint_shift_max_cm": 7.33,
+    "finite": true
+  }
+]
